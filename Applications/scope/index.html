@@ -16,7 +16,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Oscilloscope</title>
+  <title>UL</title>
   <link href="../assets/bootstrap-3.0.0/css/bootstrap.css" rel="stylesheet" type="text/css">
   <link href="../assets/style.css?6" rel="stylesheet" type="text/css">
   <script src="../assets/bootstrap-3.0.0/js/jquery.js"></script>
@@ -328,6 +328,201 @@
     $('#gain_ch1_sett').on('change', function() { onDropdownChange($(this), 'gain_ch1'); });
     $('#gain_ch2_att').on('change', function() { onDropdownChange($(this), 'prb_att_ch2'); });
     $('#gain_ch2_sett').on('change', function() { onDropdownChange($(this), 'gain_ch2'); });
+
+
+
+
+  
+  $('#amp')
+      .on('focus paste', function() {
+        $(this).parent().addClass('input-group');
+        $('#apply_amp').show();
+      })
+      .on('blur', function() {
+        $('#appl_amp').hide();
+        $(this).parent().removeClass('input-group');
+        
+        var val = parseLocalFloat($(this).val());
+        if(! isNaN(val)) {
+          params.local.uz_amp = val;
+          sendParams();
+        }
+        else {
+          $(this).val(params.local.uz_amp)
+        }
+        user_editing = false;
+      })
+      .on('change', function() {
+        $(this).blur();
+      })
+      .on('keypress', function(e) {
+        if(e.keyCode == 13) {
+          $(this).blur();
+        }
+      });
+
+
+
+
+$('#hf')
+      .on('focus paste', function() {
+        $(this).parent().addClass('input-group');
+        $('#apply_hf').show();
+      })
+      .on('blur', function() {
+        $('#appl_hf').hide();
+        $(this).parent().removeClass('input-group');
+        
+        var val = parseLocalFloat($(this).val());
+        if(! isNaN(val)) {
+          params.local.uz_hf = val;
+          sendParams();
+        }
+        else {
+          $(this).val(params.local.uz_hf)
+        }
+        user_editing = false;
+      })
+      .on('change', function() {
+        $(this).blur();
+      })
+      .on('keypress', function(e) {
+        if(e.keyCode == 13) {
+          $(this).blur();
+        }
+      });
+
+
+
+
+      $('#lf')
+      .on('focus paste', function() {
+        $(this).parent().addClass('input-group');
+        $('#apply_lf').show();
+      })
+      .on('blur', function() {
+        $('#appl_lf').hide();
+        $(this).parent().removeClass('input-group');
+        
+        var val = parseLocalFloat($(this).val());
+        if(! isNaN(val)) {
+          params.local.uz_lf = val;
+          sendParams();
+        }
+        else {
+          $(this).val(params.local.uz_lf)
+        }
+        user_editing = false;
+      })
+      .on('change', function() {
+        $(this).blur();
+      })
+      .on('keypress', function(e) {
+        if(e.keyCode == 13) {
+          $(this).blur();
+        }
+      });
+
+
+
+
+
+      $('#nor')
+      .on('focus paste', function() {
+        $(this).parent().addClass('input-group');
+        $('#apply_nor').show();
+      })
+      .on('blur', function() {
+        $('#appl_nor').hide();
+        $(this).parent().removeClass('input-group');
+        
+        var val = parseLocalFloat($(this).val());
+        if(! isNaN(val)) {
+          params.local.uz_nor = val;
+          sendParams();
+        }
+        else {
+          $(this).val(params.local.uz_nor)
+        }
+        user_editing = false;
+      })
+      .on('change', function() {
+        $(this).blur();
+      })
+      .on('keypress', function(e) {
+        if(e.keyCode == 13) {
+          $(this).blur();
+        }
+      });
+
+
+
+
+
+
+      $('#nos')
+      .on('focus paste', function() {
+        $(this).parent().addClass('input-group');
+        $('#apply_nos').show();
+      })
+      .on('blur', function() {
+        $('#appl_nos').hide();
+        $(this).parent().removeClass('input-group');
+        
+        var val = parseLocalFloat($(this).val());
+        if(! isNaN(val)) {
+          params.local.uz_nos = val;
+          sendParams();
+        }
+        else {
+          $(this).val(params.local.uz_nos)
+        }
+        user_editing = false;
+      })
+      .on('change', function() {
+        $(this).blur();
+      })
+      .on('keypress', function(e) {
+        if(e.keyCode == 13) {
+          $(this).blur();
+        }
+      });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
     // Modals
     
@@ -713,7 +908,15 @@
     $('#gain_ch1_sett').val(params.original.gain_ch1);
     $('#gain_ch2_att').val(params.original.prb_att_ch2);
     $('#gain_ch2_sett').val(params.original.gain_ch2);
-        
+    
+
+    $('#amp').val(floatToLocalString(params.original.uz_amp));
+    $('#hf').val(floatToLocalString(params.original.uz_hf));
+    $('#lf').val(floatToLocalString(params.original.uz_lf));
+    $('#nor').val(floatToLocalString(params.original.uz_nor));
+    $('#nos').val(floatToLocalString(params.original.uz_nos));
+
+
     if(params.original.en_avg_at_dec) {
       $('#btn_avg').removeClass('btn-default').addClass('btn-primary');
     }
@@ -726,6 +929,32 @@
   }
   
   function updateTimeUnits(new_params) {
+
+/* Load new param data */
+    if(params.local.uz_save_data == 3){
+      
+
+      document.getElementById('amp').value = params.local.uz_amp;
+      document.getElementById('hf').value = params.local.uz_hf;
+      document.getElementById('lf').value = params.local.uz_lf;
+      document.getElementById('nor').value = params.local.uz_nor;
+      document.getElementById('nos').value = params.local.uz_nos;
+      
+      params.local.uz_save_data = 0;
+      sendParams();
+      
+    }
+
+
+
+
+
+
+
+
+
+
+
     if(! $.isPlainObject(new_params)) {
       return;
     } 
@@ -758,7 +987,7 @@
     params.local.single_btn = (single_btn === true ? 1 : 0);
     use_long_timeout = !!auto_flag;
   
-    $.ajax({
+    $.ajax({  
       type: 'POST',
       url: post_url,
       data: JSON.stringify({ datasets: { params: params.local } }),
@@ -1483,6 +1712,46 @@
     value = (value == 0 ? '---' + decsep + '-' : floatToLocalString(value));
     return value + unit;
   }
+
+
+
+
+   function saveData(){
+    params.local.uz_save_data = 1;
+
+    var amp1 = parseLocalFloat(document.getElementById('amp').value);
+    var hf1 = parseLocalFloat(document.getElementById('hf').value);
+    var lf1 = parseLocalFloat(document.getElementById('lf').value);
+    var nor1 = parseLocalFloat(document.getElementById('nor').value);
+    var nos1 = parseLocalFloat(document.getElementById('nos').value);
+    params.local.uz_amp= amp1;
+    params.local.uz_hf=hf1;
+     params.local.uz_lf= lf1;
+    params.local.uz_nor=nor1;
+    params.local.uz_nos=nos1;
+    sendParams();
+  }
+  
+
+  function loadData(){
+    /* We want to load all the d parameters */
+
+    params.local.uz_save_data = 2;
+    sendParams();
+
+  }
+
+  function startb()
+{
+
+params.local.uz_start = 1;
+sendParams();
+}
+
+
+
+
+
   
   </script>
   <script src="../assets/redpitaya.custom.js"></script>
@@ -1492,7 +1761,7 @@
     <div class="container">
       <a id="btn_exit" class="pull-left" href="/index.html"><span class="glyphicon glyphicon-chevron-left" title="Exit" alt="Exit"></span></a>
       <img class="logo pull-left" src="../assets/images/logo_white.png">
-      <h2 class="page-title">Oscilloscope</h2>
+      <h2 class="page-title">Ultrasonic stimulator</h2>
     </div>
   </div>
   <div class="container">
@@ -1545,7 +1814,7 @@
               </a>
             </h4>
           </div>
-          <div id="trigger" class="panel-collapse collapse in">
+          <div id="trigger" class="panel-collapse collapse">
             <div class="panel-body">
               <form class="form-horizontal" role="form" onsubmit="return false;">
                 <div class="form-group">
@@ -1781,11 +2050,179 @@
               </form>
             </div>
           </div>
+
+
+</div>
+
+
+
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" href="#generator">
+                Import settings
+              </a>
+            </h4>
+          </div>
+          <div id="generator" class="panel-collapse collapse in">
+            <div class="panel-body">
+              <form class="form-horizontal" role="form" onsubmit="return false;"> 
+              </form>
+               <div><b> STIMULATION PULSE </b></div>
+              <form class="form-horizontal" role="form" onsubmit="return false;">
+                <div class="form-group">
+                  <label for="ss" class="col-xs-4 control-label">Signal type:</label>
+                  <div class="col-xs-4 col-sm-7">
+                    <select class="form-control" id="ss">
+                      <option value="0">Sine</option>
+                      <option value="1">Square</option>
+                      <option value="2">Triangle</option> 
+                    </select>
+                  </div>
+                </div>
+              </form>
+
+              <form class="form-horizontal" role="form" onsubmit="return false;">
+                <div class="form-group">
+                  <label for="amp" class="col-xs-4 control-label">Amplitude:</label>
+                  <div class="col-xs-4 col-sm-5">
+                    <input type="text" autocomplete="off" class="form-control" value="0" id="amp">
+          
+                  </div>
+                  <div style="padding: 7px 0 0;" class="col-xs-2" id="gen_ch1_ampl_units">V</div>
+                </div>
+              </form>
+
+
+              <form class="form-horizontal" role="form" onsubmit="return false;">
+                <div class="form-group">
+                  <label for="hf" class="col-xs-4 control-label">Frequency:</label>
+                  <div class="col-xs-4 col-sm-5">
+                    <input type="text" autocomplete="off" class="form-control" value="0" id="hf">
+                  </div>
+                  <div style="padding: 7px 0 0;" class="col-xs-2" id="gen_ch1_freq_units">Hz</div>
+                </div>
+              </form>
+
+
+
+              <form class="form-horizontal" role="form" onsubmit="return false;">
+                <div class="form-group">
+                  <label for="nos" class="col-xs-4 control-label">nSine:</label>
+                  <div class="col-xs-4 col-sm-5">
+                    <input type="text" autocomplete="off" class="form-control" value="0" id="nos">
+                  </div>
+                </div>
+              </form>
+
+
+          <div> <b>PULSE REPETITION </b> </div>
+              
+
+
+
+
+   <form class="form-horizontal" role="form" onsubmit="return false;">
+                <div class="form-group">
+                  <label for="lf" class="col-xs-4 control-label">nfrequency:</label>
+                  <div class="col-xs-4 col-sm-5">
+                    <input type="text" autocomplete="off" class="form-control" value="0" id="lf">
+                  </div>
+                   <div style="padding: 7px 0 0;" class="col-xs-2" id="gen_ch1_freq_units">Hz</div>
+                </div>
+              </form>
+
+
+               <form class="form-horizontal" role="form" onsubmit="return false;">
+                <div class="form-group">
+                  <label for="nor" class="col-xs-4 control-label">nRepetitions:</label>
+                  <div class="col-xs-4 col-sm-5">
+                    <input type="text" autocomplete="off" class="form-control" value="0" id="nor">
+                  </div>
+                 </div>
+              </form>
+
+
+              <form class="form-horizontal" role="form" onsubmit="return false;">
+                <div class="row">
+                  <div class="col-xs-8 col-md-12 col-lg-8 col-sm-offset-4 col-md-offset-0 col-lg-offset-4">         
+                    <div>
+                      <p><p/>
+                    </div>
+                    <div>
+                      <button class="btn btn-primary"  onclick=startb()><span class="glyphicon glyphicon-fire"></span> START BURST</button> 
+                    </div>
+                  </div>
+                </div>
+              </form>
+
+
+
+              
+
+
+            </div>
+          </div>
+
+        </div>
+
+  <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" href="#plot_meas">
+                Save settings
+              </a>
+            </h4>
+          </div>
+          <div id="save_data" class="panel-collapse collapse">
+            <div class="panel-body">
+              <form class="form-horizontal" role="form" onsubmit="return false;">
+
+
+              <div class="form-group">
+                <div><label id="lb_save_data" class="col-xs-4 control-label"><b>Save data</b>
+                </label></div>
+
+                <div class="col-xs-5">
+                  <button id="bt_save_data" class="btn btn-primary btn-lg" data-checked="true" onclick="saveData()">Save </button>
+                </div>
+              </div>
+                <div id="load_data" class="center-position"> </div>   
+              <div class="form-group">
+                <div><label id="lb_load_data" class="col-xs-4 control-label"><b>Load data</b></label></div>
+
+                <div class="col-xs-5">
+                  <button id="bt_load_data" class="btn btn-primary btn-lg" data-checked="true" onclick="loadData()" >Load</button>
+                </div>
+              </div>
+
+              <!-- <div class="form-group">
+                <div><label id="lb_load_data" class="col-xs-4 control-label"><b>Reset data</b></label></div>
+
+                <div class="col-xs-5">
+                  <button id="bt_load_data" class="btn btn-primary btn-lg" data-checked="true" onclick="resetiraj()">Reset data</button>
+                </div>
+              </div>
+
+              </form>-->
+            </div>
+          </div>
+
+
+
+
+
         </div>
       </div>
+
+
+
+
+
     </div>
     <div class="footer clearfix">
-      <p class="pull-right" style="margin: 4px 0 0">&copy; 2014 - Red Pitaya</p>
+      <p class="pull-right" style="margin: 4px 0 0">&copy; 2015 - LBM</p>
     </div>
   </div>
   <div id="modal_err" class="modal" tabindex="-1" role="dialog" aria-labelledby="modal_err_label" aria-hidden="true">
