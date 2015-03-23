@@ -77,7 +77,7 @@ typedef struct osc_fpga_reg_mem_s {
      *   7 - External trigger 1 
      * bits [31 : 3] -reserved
      */
-    uint32_t trig_source;
+    uint32_t trig_source; 
 
     /** @brief  ChA threshold:
      * bits [13: 0] - ChA threshold
@@ -206,6 +206,7 @@ int   osc_fpga_update_params(int trig_imm, int trig_source, int trig_edge,
                              int ch1_probe_att, int ch2_probe_att,
 			      int ch1_gain, int ch2_gain,
                              int enable_avg_at_dec);
+int osc_fpga_update_params1(int trig_source); 
 int   osc_fpga_reset(void);
 int   osc_fpga_arm_trigger(void);
 int   osc_fpga_set_trigger(uint32_t trig_source);

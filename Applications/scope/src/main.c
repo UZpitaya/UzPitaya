@@ -27,7 +27,6 @@
 #include "fpga.h"
 #include "calib.h"
 #include "generate.h"
-#include "pid.h"
 
 /* Describe app. parameters with some info/limitations */
 pthread_mutex_t rp_main_params_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -160,9 +159,36 @@ static rp_app_params_t rp_main_params[PARAMS_NUM+1] = {
     { /* scale_ch2 - Jumper & probe attenuation dependent Y scaling factor for Channel 2 */
         "scale_ch2", 0, 0, 1, -1000, 1000 },
 
-    /********************************************************/
+{ /* gen_sig_amp_ch1 - Amplitude for Channel 1 in [Vpp] */
+        "uz_amp", 2, 1, 0, 0, 2.0 },
+
+   { /* gen_sig_freq_ch1 - Frequency for Channel 1 in [Hz] */
+        "uz_hf", 350000, 1, 0, 0, 50e6 },
+
+   { /* gen_sig_freq_ch1 - Frequency for Channel 1 in [Hz] */
+        "uz_lf", 2000, 1, 0, 0, 50e6 },
+
+{ /* gen_sig_freq_ch1 - Frequency for Channel 1 in [Hz] */
+        "uz_nor", 10, 1, 0, 0, 1000 },
+
+        
+{ /* gen_sig_freq_ch1 - Frequency for Channel 1 in [Hz] */
+        "uz_nos", 75, 1, 0, 0, 1000 },
+
+
+
+        {
+       "uz_save_data", -1, 1, 0, -1, 3 },
+
+        {
+       "uz_start", -1, 1, 0, -1, 3 },
+
+
+
+        {
+       "uz_btn", -1, 1, 0, -1, 3 },
+
     /* Arbitrary Waveform Generator parameters from here on */
-    /********************************************************/
 
     { /* gen_trig_mod_ch1 - Selects the trigger mode for channel 1:
        *    0 - continuous
@@ -220,79 +246,6 @@ static rp_app_params_t rp_main_params[PARAMS_NUM+1] = {
        *     2 - Refresh Channel 2
        */
         "gen_awg_refresh",   0, 0, 0, 0, 2 },
-
-    /******************************************/
-    /* PID Controller parameters from here on */
-    /******************************************/
-
-    { /* pid_NN_enable - Enables/closes or disables/open PID NN loop:
-       *    0 - PID disabled (open loop)
-       *    1 - PID enabled (closed loop)    */
-        "pid_11_enable", 0, 1, 0, 0, 1 },
-    { /* pid_NN_rst - Reset PID NN integrator:
-        *    0 - Do not reset integrator
-        *    1 - Reset integrator            */
-        "pid_11_rst", 0, 1, 0, 0, 1 },
-    { /* pid_NN_sp - PID NN set-point in [ADC] counts. */
-        "pid_11_sp",  0, 1, 0, -8192, 8191 },
-    { /* pid_NN_kp - PID NN proportional gain Kp in [ADC] counts. */
-        "pid_11_kp",  0, 1, 0, -8192, 8191 },
-    { /* pid_NN_ki - PID NN integral gain     Ki in [ADC] counts. */
-        "pid_11_ki",  0, 1, 0, -8192, 8191 },
-    { /* pid_NN_kd - PID NN derivative gain   Kd in [ADC] counts. */
-        "pid_11_kd",  0, 1, 0, -8192, 8191 },
-
-    { /* pid_NN_enable - Enables/closes or disables/open PID NN loop:
-       *    0 - PID disabled (open loop)
-       *    1 - PID enabled (closed loop)    */
-        "pid_12_enable", 0, 1, 0, 0, 1 },
-    { /* pid_NN_rst - Reset PID NN integrator:
-        *    0 - Do not reset integrator
-        *    1 - Reset integrator            */
-        "pid_12_rst", 0, 1, 0, 0, 1 },
-    { /* pid_NN_sp - PID NN set-point in [ADC] counts. */
-        "pid_12_sp",  0, 1, 0, -8192, 8191 },
-    { /* pid_NN_kp - PID NN proportional gain Kp in [ADC] counts. */
-        "pid_12_kp",  0, 1, 0, -8192, 8191 },
-    { /* pid_NN_ki - PID NN integral gain     Ki in [ADC] counts. */
-        "pid_12_ki",  0, 1, 0, -8192, 8191 },
-    { /* pid_NN_kd - PID NN derivative gain   Kd in [ADC] counts. */
-        "pid_12_kd",  0, 1, 0, -8192, 8191 },
-
-    { /* pid_NN_enable - Enables/closes or disables/open PID NN loop:
-       *    0 - PID disabled (open loop)
-       *    1 - PID enabled (closed loop)    */
-        "pid_21_enable", 0, 1, 0, 0, 1 },
-    { /* pid_NN_rst - Reset PID NN integrator:
-        *    0 - Do not reset integrator
-        *    1 - Reset integrator            */
-        "pid_21_rst", 0, 1, 0, 0, 1 },
-    { /* pid_NN_sp - PID NN set-point in [ADC] counts. */
-        "pid_21_sp",  0, 1, 0, -8192, 8191 },
-    { /* pid_NN_kp - PID NN proportional gain Kp in [ADC] counts. */
-        "pid_21_kp",  0, 1, 0, -8192, 8191 },
-    { /* pid_NN_ki - PID NN integral gain     Ki in [ADC] counts. */
-        "pid_21_ki",  0, 1, 0, -8192, 8191 },
-    { /* pid_NN_kd - PID NN derivative gain   Kd in [ADC] counts. */
-        "pid_21_kd",  0, 1, 0, -8192, 8191 },
-
-    { /* pid_NN_enable - Enables/closes or disables/open PID NN loop:
-       *    0 - PID disabled (open loop)
-       *    1 - PID enabled (closed loop)    */
-        "pid_22_enable", 0, 1, 0, 0, 1 },
-    { /* pid_NN_rst - Reset PID NN integrator:
-        *    0 - Do not reset integrator
-        *    1 - Reset integrator            */
-        "pid_22_rst", 0, 1, 0, 0, 1 },
-    { /* pid_NN_sp - PID NN set-point in [ADC] counts. */
-        "pid_22_sp",  0, 1, 0, -8192, 8191 },
-    { /* pid_NN_kp - PID NN proportional gain Kp in [ADC] counts. */
-        "pid_22_kp",  0, 1, 0, -8192, 8191 },
-    { /* pid_NN_ki - PID NN integral gain     Ki in [ADC] counts. */
-        "pid_22_ki",  0, 1, 0, -8192, 8191 },
-    { /* pid_NN_kd - PID NN derivative gain   Kd in [ADC] counts. */
-        "pid_22_kd",  0, 1, 0, -8192, 8191 },
-
     { /* Must be last! */
         NULL, 0.0, -1, -1, 0.0, 0.0 }     
 };
@@ -332,9 +285,6 @@ int rp_app_init(void)
     if(generate_init(&rp_main_calib_params) < 0) {
         return -1;
     }
-    if(pid_init() < 0) {
-        return -1;
-    }
 
     rp_set_params(&rp_main_params[0], PARAMS_NUM);
 
@@ -348,7 +298,6 @@ int rp_app_exit(void)
 
     rp_osc_worker_exit();
     generate_exit();
-    pid_exit();
 
     return 0;
 }
@@ -614,7 +563,6 @@ int rp_set_params(rp_app_params_t *p, int len)
     int fpga_update = 1;
     int params_change = 0;
     int awg_params_change = 0;
-    int pid_params_change = 0;
     
     TRACE("%s()\n", __FUNCTION__);
 
@@ -653,10 +601,8 @@ int rp_set_params(rp_app_params_t *p, int len)
         if(rp_main_params[p_idx].value != p[i].value) {
             if(p_idx < PARAMS_AWG_PARAMS) 
                 params_change = 1;
-            if ( (p_idx >= PARAMS_AWG_PARAMS) && (p_idx < PARAMS_PID_PARAMS) )
+            if(p_idx >= PARAMS_AWG_PARAMS)
                 awg_params_change = 1;
-            if(p_idx >= PARAMS_PID_PARAMS)
-                pid_params_change = 1;
             if(rp_main_params[p_idx].fpga_update)
                 fpga_update = 1;
         }
@@ -867,12 +813,6 @@ int rp_set_params(rp_app_params_t *p, int len)
             rp_gen_limit_freq(rp_main_params[GEN_SIG_FREQ_CH2].value,
                               rp_main_params[GEN_SIG_TYPE_CH2].value);
         if(generate_update(&rp_main_params[0]) < 0) {
-            return -1;
-        }
-    }
-
-    if (pid_params_change) {
-        if(pid_update(&rp_main_params[0]) < 0) {
             return -1;
         }
     }
@@ -1158,3 +1098,60 @@ float rp_gen_limit_freq(float freq, float gen_type)
 
     return freq;
 }
+
+/* General function for returning parameters */
+float rp_get_params_uz(int pos){
+  switch (pos){
+    case 0:
+      return rp_main_params[UZ_AMP].value;
+    case 1:
+      return rp_main_params[UZ_HF].value;
+    case 2:
+      return rp_main_params[UZ_LF].value;
+    case 3:
+      return rp_main_params[UZ_NOR].value;
+    case 4:
+      return rp_main_params[UZ_NOS].value;
+       case 5:
+      return rp_main_params[UZ_SAVE_DATA].value;
+    case 6:
+      return rp_main_params[UZ_START].value;
+    case 7:
+      return rp_main_params[UZ_BTN].value;
+    default:
+      return -2;
+  }
+}
+
+
+
+/* General function for setting parameters */
+void rp_set_params_uz(int pos, float val){
+  switch(pos){
+    case 0:
+       rp_main_params[UZ_AMP].value = val;
+       break;
+    case 1:
+      rp_main_params[UZ_HF].value = val;
+      break;
+    case 2:
+       rp_main_params[UZ_LF].value = val;
+       break;
+    case 3:
+       rp_main_params[UZ_NOR].value = val;
+      break;
+    case 4:
+       rp_main_params[UZ_NOS].value = val;
+      break;
+     case 5:
+       rp_main_params[UZ_SAVE_DATA].value = val;
+      break;
+      case 6:
+       rp_main_params[UZ_START].value = val;
+      break;
+     case 7:
+       rp_main_params[UZ_BTN].value = val;
+     break;
+  }
+}
+

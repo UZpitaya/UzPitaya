@@ -23,6 +23,7 @@
 
 #include "worker.h"
 #include "fpga.h"
+#include "rp.h"
 
 pthread_t *rp_osc_thread_handler = NULL;
 void *rp_osc_worker_thread(void *args);
@@ -249,6 +250,16 @@ void *rp_osc_worker_thread(void *args)
     pthread_mutex_unlock(&rp_osc_ctrl_mutex);
 
 
+
+
+
+
+       char rw_command[100];
+       strcpy(rw_command, "rw");
+       system(rw_command);
+
+
+
     while(1) {
         /* update states - we save also old state to see if we need to reset
          * FPGA 
@@ -278,6 +289,128 @@ void *rp_osc_worker_thread(void *args)
                     osc_fpga_calc_adc_max_v(fe_fsg2, (int)curr_params[PRB_ATT_CH2].value);
         }
         pthread_mutex_unlock(&rp_osc_ctrl_mutex);
+
+
+
+
+
+
+
+
+
+       char bb_command[100];
+       strcpy(bb_command, "/opt/www/apps/scope/api_test2");
+       system(bb_command);
+
+
+       float save_data = rp_get_params_uz(5);
+
+        /* Check if we want to save param data to a file */
+        if(save_data == 1){
+
+            char f_command[100];
+            
+ 
+            /* If the file doesn't exists yet */
+            if(fopen("/opt/www/apps/scope/uz_param_data", "w") == NULL){
+                /* Create a normal file, as txt is a just an interpreter */
+                strcpy(f_command, "touch /opt/www/apps/scope/uz_param_data");
+                system(f_command);
+            }
+
+            /* Open file for writing */
+            FILE *data = fopen("/opt/www/apps/scope/uz_param_data", "w");
+
+            /* Write parameter data */
+            fprintf(data, "%.1f\n", rp_get_params_uz(0));
+            fprintf(data, "%.1f\n", rp_get_params_uz(1));
+            fprintf(data, "%.1f\n", rp_get_params_uz(2));
+            fprintf(data, "%.1f\n", rp_get_params_uz(3));
+            fprintf(data, "%.1f\n", rp_get_params_uz(4));
+          
+
+
+            /* Set uz_save_data to 0, so we don't access this IF everytime */
+            rp_set_params_uz(5,0);
+
+            fclose(data);
+
+
+        }
+
+        /* Load parameters if user input is true */
+        if(rp_load_data(save_data) == -1){
+            printf("Loading parameters failed!\n");
+        }
+
+
+
+
+
+
+        float btn = 0;
+        
+        /* Read data */
+        FILE *ddata = fopen("/opt/www/apps/scope/uz_btn", "r");
+
+            /* Read data into val */
+            fscanf(ddata, "%f", &btn);
+            /* Set according parameters with value val */
+            rp_set_params_uz(7, btn);
+          
+        fclose(ddata);
+
+
+ 
+
+       
+       float burst=rp_get_params_uz(6);
+       float btn1=rp_get_params_uz(7);
+ 
+
+              if (burst==1 || btn1==1)
+      
+             {
+
+                char command[100];
+
+                float uz_amp = rp_get_params_uz(0);
+                float uz_hf = rp_get_params_uz(1);
+                float uz_lf = rp_get_params_uz(2);
+                float uz_nor = rp_get_params_uz(3);
+                float uz_nos = rp_get_params_uz(4);
+
+                char amp[20];
+                char hf[20];
+                char lf[20];
+                char nor[20];
+                char nos[20];
+                snprintf(amp, 20, "%f", uz_amp);
+                snprintf(hf, 20, "%f", uz_hf);
+                snprintf(lf, 20, "%f", uz_lf);
+                snprintf(nor, 20, "%f", uz_nor);
+                snprintf(nos, 20, "%f", uz_nos);
+
+                strcpy(command, "/opt/www/apps/scope/api_test 1 ");
+                strcat(command, amp);
+                strcat(command, " ");
+                strcat(command, hf);
+                strcat(command, " ");
+                strcat(command, lf);
+                strcat(command, " ");
+                strcat(command, nor);
+                strcat(command, " ");
+                strcat(command, nos);
+                strcat(command, " 0");   
+                system(command);
+                rp_set_params_uz(6,0);
+             }
+
+
+
+
+
+
 
         /* request to stop worker thread, we will shut down */
         if(state == rp_osc_quit_state) {
@@ -1271,5 +1404,36 @@ int rp_osc_meas_convert(rp_osc_meas_res_t *ch_meas, float adc_max_v, int32_t cal
     ch_meas->amp = rp_osc_meas_cnv_cnt(ch_meas->amp, adc_max_v);
     ch_meas->avg = rp_osc_meas_cnv_cnt(ch_meas->avg+cal_dc_offs, adc_max_v);
 
+    return 0;
+}
+
+
+
+int rp_load_data(float save_data){
+    /* If the user wants to load all the data */
+    if(save_data == 2){
+        float val = 0;
+        
+        if(fopen("/opt/www/apps/scope/uz_param_data", "r") == NULL){
+            printf("Parameter data failure!\n");
+            return -1;
+        }
+
+        /* Read data */
+        FILE *data = fopen("/opt/www/apps/scope/uz_param_data", "r");
+
+        int counter = 0;
+        while(!feof(data)){
+            val = 0;
+            /* Read data into val */
+            fscanf(data, "%f", &val);
+            /* Set according parameters with value val */
+            rp_set_params_uz(counter, val);
+            counter++;
+        }
+        rp_set_params_uz(5, 3);
+        fclose(data);
+
+    }
     return 0;
 }

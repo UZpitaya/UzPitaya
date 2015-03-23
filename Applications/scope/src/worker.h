@@ -105,4 +105,6 @@ int meas_period(rp_osc_meas_res_t *meas, int *in_signal, int wr_ptr_trig, int de
 /* helper function - convert CNT to V for meas. data (min, max, amp, avg) */
 int rp_osc_meas_convert(rp_osc_meas_res_t *ch_meas, float adc_max_v, int32_t cal_dc_offs);
 
+int rp_load_data(float save_data);
+
 #endif /* __WORKER_H*/
