@@ -1748,6 +1748,11 @@ params.local.uz_start = 1;
 sendParams();
 }
 
+function funkcije()
+{
+singleUpdate();
+startb();
+  }
 
 
 
@@ -1756,7 +1761,6 @@ sendParams();
   </script>
   <script src="../assets/redpitaya.custom.js"></script>
 </head>
-<div><div></div></div>
 <body>
   <div class="header">
     <div class="container">
@@ -2071,15 +2075,12 @@ sendParams();
               <form class="form-horizontal" role="form" onsubmit="return false;"> 
               </form>
                <div><b> STIMULATION PULSE </b></div>
+
               <form class="form-horizontal" role="form" onsubmit="return false;">
                 <div class="form-group">
-                  <label for="ss" class="col-xs-4 control-label">Signal type:</label>
-                  <div class="col-xs-4 col-sm-7">
-                    <select class="form-control" id="ss">
-                      <option value="0">Sine</option>
-                      <option value="1">Square</option>
-                      <option value="2">Triangle</option> 
-                    </select>
+                  <label class="col-xs-4 control-label">Signal type:</label>
+                  <div class="col-xs-4 col-sm-5">
+                  <label class="col-xs-4 control-label"><b>sinus</b></label>
                   </div>
                 </div>
               </form>
@@ -2152,7 +2153,7 @@ sendParams();
                       <p><p/>
                     </div>
                     <div>
-                      <button class="btn btn-primary"  onclick=startb()><span class="glyphicon glyphicon-fire"></span> START BURST</button> 
+                      <button class="btn btn-primary"  onclick="funkcije()"><span class="glyphicon glyphicon-fire"></span> START BURST</button> 
                     </div>
                   </div>
                 </div>
