@@ -344,13 +344,20 @@ void *rp_osc_worker_thread(void *args)
         }
 
 
-        float btn = 0;
+        float btn;
+        float param;
 
-          if( access( "/tmp/uz_btn", F_OK ) != -1 ) {
+ 
+          
+          if(access( "/tmp/uz_btn", F_OK ) != -1 ) {
     // file exists
+          
                 btn=1;
-              
-            } else {
+
+}
+
+             else {
+
     // file doesn't exist
                 btn=0;
             }
@@ -374,11 +381,13 @@ void *rp_osc_worker_thread(void *args)
        
        float burst=rp_get_params_uz(6);
        //float btn1=rp_get_params_uz(7);
- 
 
-              if (burst||btn)  {
 
-               
+
+
+              if (burst|| ((btn==1)&&(param==1)))  {
+
+         
                 char command[100];
 
                 float uz_amp = rp_get_params_uz(0);
@@ -411,7 +420,16 @@ void *rp_osc_worker_thread(void *args)
                 strcat(command, " 0 &");   
                 system(command);
                 rp_set_params_uz(6,0);
-        
+                param=0;
+               // if(btn==1) {
+                //usleep(2000000);
+                //btn=0;
+                //} 
+             }
+             if(btn==0)
+             {
+
+                param=1;
              }
 
 
@@ -434,7 +452,7 @@ void *rp_osc_worker_thread(void *args)
                             curr_params[PRB_ATT_CH1].value,
                             curr_params[PRB_ATT_CH2].value, 
                             curr_params[GAIN_CH1].value,
-                            curr_params[GAIN_CH2].value,                
+                            curr_params[GAIN_CH2].value, 			    
                             curr_params[EN_AVG_AT_DEC].value);
             /* Return calculated parameters to main module */
             rp_update_main_params(curr_params);
@@ -464,7 +482,7 @@ void *rp_osc_worker_thread(void *args)
                                       curr_params[PRB_ATT_CH1].value,
                                       curr_params[PRB_ATT_CH2].value,
                                       curr_params[GAIN_CH1].value,
-                                      curr_params[GAIN_CH2].value,                    
+                                      curr_params[GAIN_CH2].value,				      
                                       curr_params[EN_AVG_AT_DEC].value) < 0) {
                 fprintf(stderr, "Setting of FPGA registers failed\n");
                 rp_osc_worker_change_state(rp_osc_idle_state);
@@ -710,7 +728,7 @@ void *rp_osc_worker_thread(void *args)
             rp_osc_set_signals(rp_tmp_signals, long_acq_idx);
         }
         /* do not loop too fast */
-        usleep(10000);
+        usleep(100000);
     }
 
     rp_clean_params(curr_params);
