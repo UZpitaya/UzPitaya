@@ -92,7 +92,16 @@ typedef struct awg_reg_t {
     uint32_t cha_count_step;
 
     /** @brief Reserved */
-    uint32_t reserved_regs[4];
+    uint32_t reserved_regs1;
+
+    /* ChA number of read cycles in one burst */
+    uint32_t cha_read_cycl;
+
+    /* ChA number of burst repetitions */
+    uint32_t cha_burst_rep;
+
+    /* ChA delay between burst repetitions */
+    uint32_t cha_burst_delay;
 
     /** @brief Offset 0x24 - Channel B amplitude scale and offset 
      *
@@ -128,6 +137,19 @@ typedef struct awg_reg_t {
      * bits [29: 0] - Counter step
      */
     uint32_t chb_count_step;
+
+    /** @brief Reserved */
+    uint32_t reserved_regs2;
+
+    /* ChA number of read cycles in one burst */
+    uint32_t chb_read_cycl;
+
+    /* ChA number of burst repetitions */
+    uint32_t chb_burst_rep;
+
+    /* ChA delay between burst repetitions */
+    uint32_t chb_burst_delay;
+    
 } awg_reg_t;
 
 /** @} */
