@@ -30,7 +30,7 @@
   
   // Settings which can be modified
    
-  var app_id = 'scope';  
+  var app_id = 'us_scope';  
   var root_url = '';
   //var root_url = 'http://10.0.1.221';      // Test local
   //var root_url = 'http://192.168.53.133';  // Test remote and local
@@ -344,11 +344,11 @@
         
         var val = parseLocalFloat($(this).val());
         if(! isNaN(val)) {
-          params.local.uz_amp = val;
+          params.local.us_amp = val;
           sendParams();
         }
         else {
-          $(this).val(params.local.uz_amp)
+          $(this).val(params.local.us_amp)
         }
         user_editing = false;
       })
@@ -375,11 +375,11 @@ $('#hf')
         
         var val = parseLocalFloat($(this).val());
         if(! isNaN(val)) {
-          params.local.uz_hf = val;
+          params.local.us_hf = val;
           sendParams();
         }
         else {
-          $(this).val(params.local.uz_hf)
+          $(this).val(params.local.us_hf)
         }
         user_editing = false;
       })
@@ -406,11 +406,11 @@ $('#hf')
         
         var val = parseLocalFloat($(this).val());
         if(! isNaN(val)) {
-          params.local.uz_lf = val;
+          params.local.us_lf = val;
           sendParams();
         }
         else {
-          $(this).val(params.local.uz_lf)
+          $(this).val(params.local.us_lf)
         }
         user_editing = false;
       })
@@ -438,11 +438,11 @@ $('#hf')
         
         var val = parseLocalFloat($(this).val());
         if(! isNaN(val)) {
-          params.local.uz_nor = val;
+          params.local.us_nor = val;
           sendParams();
         }
         else {
-          $(this).val(params.local.uz_nor)
+          $(this).val(params.local.us_nor)
         }
         user_editing = false;
       })
@@ -471,11 +471,11 @@ $('#hf')
         
         var val = parseLocalFloat($(this).val());
         if(! isNaN(val)) {
-          params.local.uz_nos = val;
+          params.local.us_nos = val;
           sendParams();
         }
         else {
-          $(this).val(params.local.uz_nos)
+          $(this).val(params.local.us_nos)
         }
         user_editing = false;
       })
@@ -487,42 +487,6 @@ $('#hf')
           $(this).blur();
         }
       });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     
     // Modals
     
@@ -910,11 +874,11 @@ $('#hf')
     $('#gain_ch2_sett').val(params.original.gain_ch2);
     
 
-    $('#amp').val(floatToLocalString(params.original.uz_amp));
-    $('#hf').val(floatToLocalString(params.original.uz_hf));
-    $('#lf').val(floatToLocalString(params.original.uz_lf));
-    $('#nor').val(floatToLocalString(params.original.uz_nor));
-    $('#nos').val(floatToLocalString(params.original.uz_nos));
+    $('#amp').val(floatToLocalString(params.original.us_amp));
+    $('#hf').val(floatToLocalString(params.original.us_hf));
+    $('#lf').val(floatToLocalString(params.original.us_lf));
+    $('#nor').val(floatToLocalString(params.original.us_nor));
+    $('#nos').val(floatToLocalString(params.original.us_nos));
 
 
     if(params.original.en_avg_at_dec) {
@@ -934,11 +898,11 @@ $('#hf')
     if(params.local.uz_save_data == 3){
       
 
-      document.getElementById('amp').value = params.local.uz_amp;
-      document.getElementById('hf').value = params.local.uz_hf;
-      document.getElementById('lf').value = params.local.uz_lf;
-      document.getElementById('nor').value = params.local.uz_nor;
-      document.getElementById('nos').value = params.local.uz_nos;
+      document.getElementById('amp').value = params.local.us_amp;
+      document.getElementById('hf').value = params.local.us_hf;
+      document.getElementById('lf').value = params.local.us_lf;
+      document.getElementById('nor').value = params.local.us_nor;
+      document.getElementById('nos').value = params.local.us_nos;
       
       params.local.uz_save_data = 0;
       sendParams();
@@ -1716,48 +1680,40 @@ $('#hf')
 
 
 
-   function saveData(){
-    params.local.uz_save_data = 1;
+function saveData(){
+  params.local.us_save_data = 1;
 
-    var amp1 = parseLocalFloat(document.getElementById('amp').value);
-    var hf1 = parseLocalFloat(document.getElementById('hf').value);
-    var lf1 = parseLocalFloat(document.getElementById('lf').value);
-    var nor1 = parseLocalFloat(document.getElementById('nor').value);
-    var nos1 = parseLocalFloat(document.getElementById('nos').value);
-    params.local.uz_amp= amp1;
-    params.local.uz_hf=hf1;
-     params.local.uz_lf= lf1;
-    params.local.uz_nor=nor1;
-    params.local.uz_nos=nos1;
-    sendParams();
-  }
+  var amp1 = parseLocalFloat(document.getElementById('amp').value);
+  var hf1 = parseLocalFloat(document.getElementById('hf').value);
+  var lf1 = parseLocalFloat(document.getElementById('lf').value);
+  var nor1 = parseLocalFloat(document.getElementById('nor').value);
+  var nos1 = parseLocalFloat(document.getElementById('nos').value);
+  params.local.us_amp= amp1;
+  params.local.us_hf=hf1;
+  params.local.us_lf= lf1;
+  params.local.us_nor=nor1;
+  params.local.us_nos=nos1;
+  sendParams();
+}
   
 
-  function loadData(){
-    /* We want to load all the d parameters */
-
-    params.local.uz_save_data = 2;
-    sendParams();
-
-  }
-
-  function startb()
-{
-
-params.local.uz_start = 1;
-sendParams();
+function loadData(){
+  /* We want to load all the d parameters */
+  params.local.us_save_data = 2;
+  sendParams();
 }
 
-function funkcije()
-{
-singleUpdate();
-startb();
-  }
+function startb(){
+  params.local.us_start = 1;
+  sendParams();
+}
 
+function us_start_burst(){
+  //singleUpdate();
+  params.local.gen_sig_freq_ch1;
+  startb();
+}
 
-
-
-  
   </script>
   <script src="../assets/redpitaya.custom.js"></script>
 </head>
@@ -2153,17 +2109,11 @@ startb();
                       <p><p/>
                     </div>
                     <div>
-                      <button class="btn btn-primary"  onclick="funkcije()"><span class="glyphicon glyphicon-fire"></span> START BURST</button> 
+                      <button class="btn btn-primary" onclick="us_start_burst()"><span class="glyphicon glyphicon-fire"></span> START BURST</button> 
                     </div>
                   </div>
                 </div>
               </form>
-
-
-
-              
-
-
             </div>
           </div>
 
@@ -2210,18 +2160,8 @@ startb();
               </form>-->
             </div>
           </div>
-
-
-
-
-
         </div>
       </div>
-
-
-
-
-
     </div>
     <div class="footer clearfix">
       <p class="pull-right" style="margin: 4px 0 0">&copy; 2015 - LBM</p>
