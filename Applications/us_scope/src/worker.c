@@ -23,7 +23,6 @@
 
 #include "worker.h"
 #include "fpga.h"
-#include "rp.h"
 
 pthread_t *rp_osc_thread_handler = NULL;
 void *rp_osc_worker_thread(void *args);
@@ -291,18 +290,6 @@ void *rp_osc_worker_thread(void *args)
         pthread_mutex_unlock(&rp_osc_ctrl_mutex);
 
 
-
-
-
-
-
-
-
-      // char bb_command[100];
-     //strcpy(bb_command, "/opt/www/apps/scope/api_test2");
-      // system(bb_command);
-
-
        float save_data = rp_get_params_uz(5);
 
         /* Check if we want to save param data to a file */
@@ -310,7 +297,6 @@ void *rp_osc_worker_thread(void *args)
 
             char f_command[100];
             
- 
             /* If the file doesn't exists yet */
             if(fopen("/opt/www/apps/scope/uz_param_data", "w") == NULL){
                 /* Create a normal file, as txt is a just an interpreter */
@@ -328,14 +314,10 @@ void *rp_osc_worker_thread(void *args)
             fprintf(data, "%.1f\n", rp_get_params_uz(3));
             fprintf(data, "%.1f\n", rp_get_params_uz(4));
           
-
-
             /* Set uz_save_data to 0, so we don't access this IF everytime */
             rp_set_params_uz(5,0);
 
             fclose(data);
-
-
         }
 
         /* Load parameters if user input is true */
@@ -343,7 +325,7 @@ void *rp_osc_worker_thread(void *args)
             printf("Loading parameters failed!\n");
         }
 
-
+/*
         float btn;
         float param;
 
@@ -361,7 +343,7 @@ void *rp_osc_worker_thread(void *args)
     // file doesn't exist
                 btn=0;
             }
-           
+     */      
         
         
 
@@ -378,7 +360,7 @@ void *rp_osc_worker_thread(void *args)
 
  
 
-       
+/*       
        float burst=rp_get_params_uz(6);
        //float btn1=rp_get_params_uz(7);
 
@@ -434,7 +416,7 @@ void *rp_osc_worker_thread(void *args)
 
 
 
-
+*/
 
 
 

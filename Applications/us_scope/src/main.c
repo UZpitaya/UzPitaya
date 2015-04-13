@@ -159,34 +159,24 @@ static rp_app_params_t rp_main_params[PARAMS_NUM+1] = {
     { /* scale_ch2 - Jumper & probe attenuation dependent Y scaling factor for Channel 2 */
         "scale_ch2", 0, 0, 1, -1000, 1000 },
 
-{ /* gen_sig_amp_ch1 - Amplitude for Channel 1 in [Vpp] */
-        "uz_amp", 2, 1, 0, 0, 2.0 },
+    /* Ultra sound parameters from here on */
 
-   { /* gen_sig_freq_ch1 - Frequency for Channel 1 in [Hz] */
-        "uz_hf", 350000, 1, 0, 0, 50e6 },
-
-   { /* gen_sig_freq_ch1 - Frequency for Channel 1 in [Hz] */
-        "uz_lf", 2000, 1, 0, 0, 50e6 },
-
-{ /* gen_sig_freq_ch1 - Frequency for Channel 1 in [Hz] */
-        "uz_nor", 10, 1, 0, 0, 1000 },
-
-        
-{ /* gen_sig_freq_ch1 - Frequency for Channel 1 in [Hz] */
-        "uz_nos", 75, 1, 0, 0, 1000 },
-
-
-
-        {
-       "uz_save_data", -1, 1, 0, -1, 3 },
-
-        {
-       "uz_start", -1, 1, 0, -1, 3 },
-
-
-
-        {
-       "uz_btn", -1, 1, 0, -1, 3 },
+    { /* gen_sig_amp_ch1 - Amplitude for Channel 1 in [Vpp] */
+        "us_amp", 2, 1, 0, 0, 2 },
+    { /* gen_sig_freq_ch1 - Frequency for Channel 1 in [Hz] */
+        "us_hf", 350000, 1, 0, 0, 50e6 },
+    { /* gen_sig_freq_ch1 - Frequency for Channel 1 in [Hz] */
+        "us_lf", 2000, 1, 0, 0, 50e6 },
+    { /* gen_sig_freq_ch1 - Frequency for Channel 1 in [Hz] */
+        "us_nor", 10, 1, 0, 0, 1000 },    
+    { /* gen_sig_freq_ch1 - Frequency for Channel 1 in [Hz] */
+        "us_nos", 75, 1, 0, 0, 1000 },
+    { /* Save data param */ 
+       "us_save_data", -1, 1, 0, -1, 3 },
+    { /* Start param */
+       "us_start", -1, 1, 0, -1, 3 },
+    { /* External trigger param */
+       "us_btn", -1, 1, 0, -1, 3 },
 
     /* Arbitrary Waveform Generator parameters from here on */
 
@@ -803,7 +793,10 @@ int rp_set_params(rp_app_params_t *p, int len)
         }
     }
 
-    if(awg_params_change) {
+    if(awg_params_change || (rp_main_params[US_START].value == 1)) {
+
+        /* Enable channel 1 */
+        rp_main_params[GEN_ENABLE_CH1].value = 1;
 
         /* Correct frequencies if needed */
         rp_main_params[GEN_SIG_FREQ_CH1].value = 
@@ -1103,21 +1096,21 @@ float rp_gen_limit_freq(float freq, float gen_type)
 float rp_get_params_uz(int pos){
   switch (pos){
     case 0:
-      return rp_main_params[UZ_AMP].value;
+      return rp_main_params[US_AMP].value;
     case 1:
-      return rp_main_params[UZ_HF].value;
+      return rp_main_params[US_HF].value;
     case 2:
-      return rp_main_params[UZ_LF].value;
+      return rp_main_params[US_LF].value;
     case 3:
-      return rp_main_params[UZ_NOR].value;
+      return rp_main_params[US_REPS].value;
     case 4:
-      return rp_main_params[UZ_NOS].value;
+      return rp_main_params[US_NOS].value;
        case 5:
-      return rp_main_params[UZ_SAVE_DATA].value;
+      return rp_main_params[US_SAVE_DATA].value;
     case 6:
-      return rp_main_params[UZ_START].value;
+      return rp_main_params[US_START].value;
     case 7:
-      return rp_main_params[UZ_BTN].value;
+      return rp_main_params[US_BTN].value;
     default:
       return -2;
   }
@@ -1129,28 +1122,28 @@ float rp_get_params_uz(int pos){
 void rp_set_params_uz(int pos, float val){
   switch(pos){
     case 0:
-       rp_main_params[UZ_AMP].value = val;
+       rp_main_params[US_AMP].value = val;
        break;
     case 1:
-      rp_main_params[UZ_HF].value = val;
+      rp_main_params[US_HF].value = val;
       break;
     case 2:
-       rp_main_params[UZ_LF].value = val;
+       rp_main_params[US_LF].value = val;
        break;
     case 3:
-       rp_main_params[UZ_NOR].value = val;
+       rp_main_params[US_REPS].value = val;
       break;
     case 4:
-       rp_main_params[UZ_NOS].value = val;
+       rp_main_params[US_NOS].value = val;
       break;
      case 5:
-       rp_main_params[UZ_SAVE_DATA].value = val;
+       rp_main_params[US_SAVE_DATA].value = val;
       break;
       case 6:
-       rp_main_params[UZ_START].value = val;
+       rp_main_params[US_START].value = val;
       break;
      case 7:
-       rp_main_params[UZ_BTN].value = val;
+       rp_main_params[US_BTN].value = val;
      break;
   }
 }

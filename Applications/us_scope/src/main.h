@@ -88,18 +88,15 @@ typedef struct rp_osc_meas_res_s {
 #define GEN_DC_NORM_2     39
 #define SCALE_CH1         40
 #define SCALE_CH2         41
-#define UZ_AMP            42
-#define UZ_HF             43
-#define UZ_LF             44
-#define UZ_NOR            45
-#define UZ_NOS            46
-#define UZ_SAVE_DATA      47
-#define UZ_START          48
-#define UZ_BTN            49
-
-
-
-
+/* US parameters */
+#define US_AMP            42
+#define US_HF             43
+#define US_LF             44
+#define US_REPS           45
+#define US_NOS            46
+#define US_SAVE_DATA      47
+#define US_START          48
+#define US_BTN            49
 
 /* AWG parameters */
 #define GEN_TRIG_MODE_CH1 50

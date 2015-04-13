@@ -562,18 +562,18 @@ int generate_update(rp_app_params_t *params)
     /* Waveform from signal gets treated differently then others */
     if(ch1_enable > 0) {
         if(ch1_type < eSignalFile) {
-            synthesize_signal(params[GEN_SIG_AMP_CH1].value,
-                              params[GEN_SIG_FREQ_CH1].value,
+            synthesize_signal(params[US_AMP].value,
+                              params[US_HF].value,
                               gen_calib_params->be_ch1_dc_offs,
                               gen_calib_params->be_ch1_fs,
                               ch1_max_dac_v,
                               params[GEN_SIG_DCOFF_CH1].value,
-                              ch1_type, ch1_data, &ch1_param);
+                              0, ch1_data, &ch1_param);
             wrap = 0;  // whole buffer used
         } else {
             /* Signal file */
             calculate_data(ch1_arb,  in_smpl_len1,
-                           params[GEN_SIG_AMP_CH1].value, params[GEN_SIG_FREQ_CH1].value,
+                           params[US_AMP].value, params[US_HF].value,
                            gen_calib_params->be_ch1_dc_offs,
                            gen_calib_params->be_ch1_fs,
                            ch1_max_dac_v, params[GEN_SIG_DCOFF_CH1].value,
@@ -592,8 +592,8 @@ int generate_update(rp_app_params_t *params)
     /* Waveform from signal gets treated differently then others */
     if(ch2_enable > 0) {
         if(ch2_type < eSignalFile) {
-            synthesize_signal(params[GEN_SIG_AMP_CH2].value,
-                              params[GEN_SIG_FREQ_CH2].value,
+            synthesize_signal(1,
+                              100000,
                               gen_calib_params->be_ch2_dc_offs,
                               gen_calib_params->be_ch2_fs,
                               ch2_max_dac_v,
@@ -623,10 +623,39 @@ int generate_update(rp_app_params_t *params)
     params[GEN_SINGLE_CH1].value = 0;
     params[GEN_SINGLE_CH2].value = 0;
 
-    
-    //if (invalid_file==1)
-    //  return -1;  // Use this return value to notify the GUI user about invalid file. 
-    
+    /* Start bursts */
+    if(params[US_START].value == 1){
+        if(generate_burst(params, 2) < 0){
+            printf("Error generating burst.\n");
+            return -1;
+        }
+    }
+    return 0;
+}
+
+
+
+
+int generate_burst(rp_app_params_t *params, uint32_t period){
+    gen_setBurstPeriod(params, period);
+    return 0;
+}
+
+int gen_setBurstPeriod(rp_app_params_t *params, uint32_t period) {
+
+    if (period < BURST_PERIOD_MIN || period > BURST_PERIOD_MAX) {
+        return -1;
+    }
+
+    int burstCount = (int)params[US_REPS].value;
+   
+    // period = signal_time * burst_count + delay_time
+    int delay = (int) (period - (1 / (params[US_HF].value) * MICRO) * burstCount);
+    if (delay <= 0) {
+        // if delay is 0, then FPGA generates continuous signal
+        delay = 1;
+    }
+
     return 0;
 }
 

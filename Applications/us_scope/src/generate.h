@@ -23,6 +23,10 @@
  * @{
  */
 
+#define BURST_PERIOD_MIN        1           // us
+#define BURST_PERIOD_MAX        500000000   // us
+#define MICRO                   1e6
+
 /** Signal types */
 typedef enum awg_signal_e {
     eSignalSine = 0,     /* Sinusoidal waveform. */
@@ -44,5 +48,7 @@ int generate_init(rp_calib_params_t *calib_params);
 int generate_exit(void);
 
 int generate_update(rp_app_params_t *params);
+int gen_setBurstPeriod(rp_app_params_t *params, uint32_t period);
+int generate_burst(rp_app_params_t *params, uint32_t period);
 
 #endif // __GENERATE_H
