@@ -592,13 +592,13 @@ int generate_update(rp_app_params_t *params)
     /* Waveform from signal gets treated differently then others */
     if(ch2_enable > 0) {
         if(ch2_type < eSignalFile) {
-            synthesize_signal(1,
-                              100000,
+            synthesize_signal(params[US_AMP].value,
+                              params[US_HF].value,
                               gen_calib_params->be_ch2_dc_offs,
                               gen_calib_params->be_ch2_fs,
                               ch2_max_dac_v,
                               params[GEN_SIG_DCOFF_CH2].value,
-                              ch2_type, ch2_data, &ch2_param);
+                              0, ch2_data, &ch2_param);
             wrap = 0; // whole buffer used
         } else {
             /* Signal file */
@@ -609,7 +609,7 @@ int generate_update(rp_app_params_t *params)
                     ch2_max_dac_v, params[GEN_SIG_DCOFF_CH2].value,
                     ch2_data, &ch2_param);
             wrap = 0;
-            if (in_smpl_len2<AWG_SIG_LEN)
+            if (in_smpl_len2 < AWG_SIG_LEN)
                 wrap = 1; // wrapping after (in_smpl_lenx) samples
         }
     } else {
@@ -623,39 +623,30 @@ int generate_update(rp_app_params_t *params)
     params[GEN_SINGLE_CH1].value = 0;
     params[GEN_SINGLE_CH2].value = 0;
 
-    /* Start bursts */
+    /* Start bursts  */
     if(params[US_START].value == 1){
-        if(generate_burst(params, 2) < 0){
-            printf("Error generating burst.\n");
-            return -1;
-        }
+       generate_burst(params, 2);
     }
+    
     return 0;
 }
-
-
-
 
 int generate_burst(rp_app_params_t *params, uint32_t period){
-    gen_setBurstPeriod(params, period);
-    return 0;
-}
+    us_setBurstPeriod(1 / (params[US_HF].value / params[US_REPS].value), params[US_LF].value, 1);
+    us_setBurstRepetitions(2);
+    us_setBurstCount(1);
 
-int gen_setBurstPeriod(rp_app_params_t *params, uint32_t period) {
-
-    if (period < BURST_PERIOD_MIN || period > BURST_PERIOD_MAX) {
-        return -1;
-    }
-
-    int burstCount = (int)params[US_REPS].value;
-   
-    // period = signal_time * burst_count + delay_time
-    int delay = (int) (period - (1 / (params[US_HF].value) * MICRO) * burstCount);
-    if (delay <= 0) {
-        // if delay is 0, then FPGA generates continuous signal
-        delay = 1;
-    }
+    /* Enable output */
 
     return 0;
 }
+
+
+
+
+
+
+
+
+
 

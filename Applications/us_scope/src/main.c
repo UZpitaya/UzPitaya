@@ -162,9 +162,9 @@ static rp_app_params_t rp_main_params[PARAMS_NUM+1] = {
     /* Ultra sound parameters from here on */
 
     { /* gen_sig_amp_ch1 - Amplitude for Channel 1 in [Vpp] */
-        "us_amp", 2, 1, 0, 0, 2 },
+        "us_amp", 1, 1, 0, 0, 2 },
     { /* gen_sig_freq_ch1 - Frequency for Channel 1 in [Hz] */
-        "us_hf", 350000, 1, 0, 0, 50e6 },
+        "us_hf", 10000, 1, 0, 0, 50e6 },
     { /* gen_sig_freq_ch1 - Frequency for Channel 1 in [Hz] */
         "us_lf", 2000, 1, 0, 0, 50e6 },
     { /* gen_sig_freq_ch1 - Frequency for Channel 1 in [Hz] */

@@ -32,6 +32,15 @@
 /** FPGA AWG output signal 2 offset */
 #define AWG_CHB_OFFSET    0x20000
 
+/* Burst constants */
+#define BURST_PERIOD_MIN        1           // us
+#define BURST_PERIOD_MAX        500000000   // us_
+#define BURST_COUNT_MIN         -1
+#define BURST_COUNT_MAX         50000
+#define BURST_REPETITIONS_MIN   1
+#define BURST_REPETITIONS_MAX   50000
+#define MICRO                   1e6
+
 /** @brief AWG FPGA registry structure.
  *
  * This structure is direct image of physical FPGA memory. When accessing it all
@@ -48,11 +57,11 @@ typedef struct awg_reg_t {
      *  bit  [   20] - Channel B state machine wrap pointer
      *  bits [19:16] - Channel B trigger selector 
      *  bits [15: 8] - Reserved
-     *  bit  [    7] - Channel B output set to 0
-     *  bit  [    6] - Channel B state machine reset
-     *  bit  [    5] - Channel B set one time trigger
-     *  bit  [    4] - Channel B state machine wrap pointer
-     *  bits [ 3: 0] - Channel B trigger selector 
+     *  bit  [    7] - Channel A output set to 0
+     *  bit  [    6] - Channel A state machine reset
+     *  bit  [    5] - Channel A set one time trigger
+     *  bit  [    4] - Channel A state machine wrap pointer
+     *  bits [ 3: 0] - Channel A trigger selector 
      *
      */
     uint32_t state_machine_conf;
@@ -167,5 +176,8 @@ int fpga_awg_init(void);
 int fpga_awg_exit(void);
 
 float fpga_awg_calc_dac_max_v(uint32_t be_gain_fs);
+int us_setBurstRepetitions(uint32_t repetitions);
+int us_setBurstPeriod(uint32_t us_reps, uint32_t us_hf, uint32_t period);
+int us_setBurstCount(uint32_t num);
 
 #endif // _FPGA_AWG_H_

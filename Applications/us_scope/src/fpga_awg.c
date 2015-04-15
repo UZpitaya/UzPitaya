@@ -197,3 +197,50 @@ float fpga_awg_calc_dac_max_v(uint32_t be_gain_fs)
 
     return max_dac_v;
 }
+
+int us_setBurstRepetitions(uint32_t repetitions){
+
+    if((repetitions < BURST_REPETITIONS_MIN || repetitions > BURST_REPETITIONS_MAX) && repetitions != -1){
+            return -1;
+    }
+
+    g_awg_reg->cha_burst_rep = repetitions;
+
+    return 0;
+}
+
+int us_setBurstPeriod(uint32_t us_reps, uint32_t us_lf, uint32_t period) {
+
+    if (period < BURST_PERIOD_MIN || period > BURST_PERIOD_MAX) {
+        return -1;
+    }
+
+    int burstCount = (int)us_reps;
+   
+    // period = signal_time * burst_count + delay_time
+    int delay = (int) (period - (1 / (us_lf) * MICRO) * burstCount);
+    if (delay <= 0) {
+        // if delay is 0, then FPGA generates continuous signal
+        delay = 1;
+    }
+
+    /* Set burst delay */
+    g_awg_reg->cha_burst_delay = (uint32_t)delay;
+
+    /* Set trigger source to internal for now */
+    g_awg_reg->state_machine_conf = (uint32_t)(g_awg_reg->state_machine_conf | 0x1); //OR operand
+
+
+    return 0;
+}
+
+int us_setBurstCount(uint32_t num){
+
+    if((num < BURST_COUNT_MIN || num > BURST_COUNT_MAX) && num == 0){
+        return -1;
+    }
+
+    /* Set count */
+    g_awg_reg->cha_read_cycl = num;
+    return 0;
+}

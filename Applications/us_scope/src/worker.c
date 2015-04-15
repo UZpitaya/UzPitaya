@@ -419,7 +419,6 @@ void *rp_osc_worker_thread(void *args)
 */
 
 
-
         /* request to stop worker thread, we will shut down */
         if(state == rp_osc_quit_state) {
             rp_clean_params(curr_params);
