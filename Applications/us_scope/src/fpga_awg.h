@@ -179,5 +179,6 @@ float fpga_awg_calc_dac_max_v(uint32_t be_gain_fs);
 int us_setBurstRepetitions(uint32_t repetitions);
 int us_setBurstPeriod(uint32_t us_reps, uint32_t us_hf, uint32_t period);
 int us_setBurstCount(uint32_t num);
+int us_EnableBurst();
 
 #endif // _FPGA_AWG_H_

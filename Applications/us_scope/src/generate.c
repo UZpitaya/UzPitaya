@@ -625,7 +625,8 @@ int generate_update(rp_app_params_t *params)
 
     /* Start bursts  */
     if(params[US_START].value == 1){
-       generate_burst(params, 2);
+
+        generate_burst(params, 2);
     }
     
     return 0;
@@ -637,7 +638,8 @@ int generate_burst(rp_app_params_t *params, uint32_t period){
     us_setBurstCount(1);
 
     /* Enable output */
-
+    us_EnableBurst();
+    
     return 0;
 }
 

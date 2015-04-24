@@ -198,6 +198,14 @@ float fpga_awg_calc_dac_max_v(uint32_t be_gain_fs)
     return max_dac_v;
 }
 
+int us_EnableBurst(){
+
+    g_awg_reg->state_machine_conf = 0x00110;
+    g_awg_reg->state_machine_conf = 0x01000;
+
+    return 0;
+}
+
 int us_setBurstRepetitions(uint32_t repetitions){
 
     if((repetitions < BURST_REPETITIONS_MIN || repetitions > BURST_REPETITIONS_MAX) && repetitions != -1){
