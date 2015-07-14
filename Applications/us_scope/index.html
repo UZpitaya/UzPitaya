@@ -1725,8 +1725,10 @@ function us_start_burst(){
       <h2 class="page-title">Ultrasonic stimulator</h2>
     </div>
   </div>
+
   <div class="container">
     <div class="row">
+      
       <div id="btn_toolbar" class="col-xs-12">
         <button id="btn_autoscale_y" class="btn btn-primary btn-lg" data-autozoom="false" onclick="autoscaleY()">
           <span class="glyphicon glyphicon-resize-vertical"></span> Autoscale
@@ -1753,11 +1755,14 @@ function us_start_burst(){
         <button id="btn_auto" class="btn btn-primary btn-lg" onclick="serverAutoScale()">AUTO</button>
         <button id="btn_avg" class="btn btn-default btn-lg" onclick="setAvgAtDec()">Averaging</button>
       </div>
+
     </div>
+
     <div class="row">
+
       <div class="col-xs-12 col-sm-12 col-md-8">
         <div class="graph-holder well well-small">
-          <div id="ytitle">Voltage [ V ]</div>
+          <div id="ytitle">Voltage [V]</div>
           <div id="trigger_cnv_holder">
             <canvas id="trigger_canvas" width="25" height="460"></canvas>
             <div id="trigger_tooltip"></div>
@@ -1766,8 +1771,11 @@ function us_start_burst(){
           <div id="xtitle"></div>
         </div>
       </div>
+
       <div class="panel-group col-xs-12 col-sm-12 col-md-4" id="accordion">
+
         <div class="panel panel-default">
+          
           <div class="panel-heading">
             <h4 class="panel-title">
               <a data-toggle="collapse" href="#trigger">
@@ -1775,9 +1783,11 @@ function us_start_burst(){
               </a>
             </h4>
           </div>
+
           <div id="trigger" class="panel-collapse collapse">
             <div class="panel-body">
               <form class="form-horizontal" role="form" onsubmit="return false;">
+                
                 <div class="form-group">
                   <label for="trig_source" class="col-xs-4 control-label">Source:</label>
                   <div class="col-xs-8">
@@ -1788,6 +1798,7 @@ function us_start_burst(){
                     </select>
                   </div>
                 </div>
+
                 <div class="form-group">
                   <label for="trig_mode" class="col-xs-4 control-label">Mode:</label>
                   <div class="col-xs-8">
@@ -1798,6 +1809,7 @@ function us_start_burst(){
                     </select>
                   </div>
                 </div>
+
                 <div class="form-group">
                   <label for="trig_edge" class="col-xs-4 control-label">Edge:</label>
                   <div class="col-xs-8">
@@ -1807,6 +1819,7 @@ function us_start_burst(){
                     </select>
                   </div>
                 </div>
+
                 <div class="form-group">
                   <label for="trig_level" class="col-xs-4 control-label">Level:</label>
                   <div class="col-xs-5">
@@ -1818,6 +1831,7 @@ function us_start_burst(){
                   <div id="trig_lev_units" class="col-xs-3" style="padding: 7px 0 0;">V</div>
                 </div>
               </form>
+
               <div class="row">
                 <div class="col-xs-4"> </div>
                 <div class="col-xs-5">
@@ -1826,10 +1840,14 @@ function us_start_burst(){
                   </button>
                 </div>
               </div>
+
             </div>
+
           </div>
         </div>
+
         <div class="panel panel-default">
+
           <div class="panel-heading">
             <h4 class="panel-title">
               <a data-toggle="collapse" href="#range">
@@ -1837,8 +1855,10 @@ function us_start_burst(){
               </a>
             </h4>
           </div>
+
           <div id="range" class="panel-collapse collapse">
             <div class="panel-body">
+
               <form class="form-horizontal" role="form" onsubmit="return false;">
                 <div class="form-group">
                   <label class="col-xs-4 col-sm-3 control-label" style="padding-top: 35px;">Range:</label>
@@ -1846,6 +1866,7 @@ function us_start_burst(){
                     <div class="row">
                       <div class="col-xs-6 text-center">
                         <div class="group-label" style="padding-bottom: 10px;">X axis</div>
+
                         <div class="btn-group" style="margin-bottom: -3px;">
                           <button id="range_x_minus" type="button" class="btn btn-primary btn-lg range-btn-left">
                             <span class="glyphicon glyphicon-minus"></span>
@@ -1854,12 +1875,15 @@ function us_start_burst(){
                             <span class="glyphicon glyphicon-plus"></span>
                           </button>
                         </div>
+
                         <div>
                           <span id="range_x" class="badge range-badge">-</span>
                         </div>
                       </div>
+
                       <div class="col-xs-6 text-center">
                         <div class="group-label" style="padding-bottom: 10px;">Y axis</div>
+                        
                         <div class="btn-group" style="margin-bottom: -3px;">
                           <button id="range_y_minus" type="button" class="btn btn-primary btn-lg range-btn-left">
                             <span class="glyphicon glyphicon-minus"></span>
@@ -1868,17 +1892,20 @@ function us_start_burst(){
                             <span class="glyphicon glyphicon-plus"></span>
                           </button>
                         </div>
+
                         <div>
                           <span id="range_y" class="badge range-badge">-</span>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> 
                 </div>
+
                 <div class="form-group">
                   <label class="col-xs-4 col-sm-3 control-label">Offset:</label>
                   <div class="col-xs-8 col-sm-9">
                     <div class="row">
+                      
                       <div class="col-xs-6 text-center">
                         <div class="btn-group" style="margin-bottom: -3px;">
                           <button id="offset_x_minus" type="button" class="btn btn-primary btn-lg range-btn-left">
@@ -1889,6 +1916,7 @@ function us_start_burst(){
                           </button>
                         </div>
                       </div>
+
                       <div class="col-xs-6 text-center">
                         <div class="btn-group" style="margin-bottom: -3px;">
                           <button id="offset_y_minus" type="button" class="btn btn-primary btn-lg range-btn-left">
@@ -1899,14 +1927,19 @@ function us_start_burst(){
                           </button>
                         </div>
                       </div>
+
                     </div>
                   </div>
                 </div>
+
               </form>
             </div>
           </div>
         </div>
+
+
         <div class="panel panel-default">
+          
           <div class="panel-heading">
             <h4 class="panel-title">
               <a data-toggle="collapse" href="#measure">
@@ -1914,6 +1947,7 @@ function us_start_burst(){
               </a>
             </h4>
           </div>
+
           <div id="measure" class="panel-collapse collapse">
             <div class="panel-body">
               <div class="row group-label">
@@ -1958,8 +1992,11 @@ function us_start_burst(){
               </div>
             </div>
           </div>
+
         </div>
+
         <div class="panel panel-default">
+
           <div class="panel-heading">
             <h4 class="panel-title">
               <a data-toggle="collapse" href="#gain">
@@ -1967,6 +2004,7 @@ function us_start_burst(){
               </a>
             </h4>
           </div>
+
           <div id="gain" class="panel-collapse collapse">
             <div class="panel-body">
               <form class="form-horizontal" role="form" onsubmit="return false;">
@@ -2011,14 +2049,10 @@ function us_start_burst(){
               </form>
             </div>
           </div>
-
-
-</div>
-
-
-
+        </div>
 
         <div class="panel panel-default">
+
           <div class="panel-heading">
             <h4 class="panel-title">
               <a data-toggle="collapse" href="#generator">
@@ -2026,6 +2060,7 @@ function us_start_burst(){
               </a>
             </h4>
           </div>
+
           <div id="generator" class="panel-collapse collapse in">
             <div class="panel-body">
               <form class="form-horizontal" role="form" onsubmit="return false;"> 
@@ -2075,13 +2110,9 @@ function us_start_burst(){
               </form>
 
 
-          <div> <b>PULSE REPETITION </b> </div>
+              <div><b>PULSE REPETITION </b></div>
               
-
-
-
-
-   <form class="form-horizontal" role="form" onsubmit="return false;">
+              <form class="form-horizontal" role="form" onsubmit="return false;">
                 <div class="form-group">
                   <label for="lf" class="col-xs-4 control-label">nfrequency:</label>
                   <div class="col-xs-4 col-sm-5">
@@ -2114,55 +2145,68 @@ function us_start_burst(){
                   </div>
                 </div>
               </form>
+
             </div>
           </div>
 
         </div>
 
-  <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a data-toggle="collapse" href="#plot_meas">
-                Save settings
-              </a>
-            </h4>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" href="#plot_meas">
+            Save settings
+          </a>
+        </h4>
+      </div>
+
+      <div id="save_data" class="panel-collapse collapse">
+        <div class="panel-body">
+          <form class="form-horizontal" role="form" onsubmit="return false;">
+          <div class="form-group"> 
+            <div><label id="lb_save_data" class="col-xs-4 control-label"><b>Save data</b></label></div>
+            
+            <div class="col-xs-5">
+              <button id="bt_save_data" class="btn btn-primary btn-lg" data-checked="true" onclick="saveData()">Save </button>
+            </div>
+
           </div>
-          <div id="save_data" class="panel-collapse collapse">
-            <div class="panel-body">
-              <form class="form-horizontal" role="form" onsubmit="return false;">
 
+            <div id="load_data" class="center-position"></div>   
+            <div class="form-group">
+              <div><label id="lb_load_data" class="col-xs-4 control-label"><b>Load data</b></label></div>
 
-              <div class="form-group">
-                <div><label id="lb_save_data" class="col-xs-4 control-label"><b>Save data</b>
-                </label></div>
-
-                <div class="col-xs-5">
-                  <button id="bt_save_data" class="btn btn-primary btn-lg" data-checked="true" onclick="saveData()">Save </button>
-                </div>
+              <div class="col-xs-5">
+                <button id="bt_load_data" class="btn btn-primary btn-lg" data-checked="true" onclick="loadData()" >Load</button>
               </div>
-                <div id="load_data" class="center-position"> </div>   
-              <div class="form-group">
-                <div><label id="lb_load_data" class="col-xs-4 control-label"><b>Load data</b></label></div>
+            </div>
 
-                <div class="col-xs-5">
-                  <button id="bt_load_data" class="btn btn-primary btn-lg" data-checked="true" onclick="loadData()" >Load</button>
-                </div>
-              </div>
+          <!-- <div class="form-group">
+            <div><label id="lb_load_data" class="col-xs-4 control-label"><b>Reset data</b></label></div>
 
-              <!-- <div class="form-group">
-                <div><label id="lb_load_data" class="col-xs-4 control-label"><b>Reset data</b></label></div>
-
-                <div class="col-xs-5">
-                  <button id="bt_load_data" class="btn btn-primary btn-lg" data-checked="true" onclick="resetiraj()">Reset data</button>
-                </div>
-              </div>
-
-              </form>-->
+            <div class="col-xs-5">
+              <button id="bt_load_data" class="btn btn-primary btn-lg" data-checked="true" onclick="resetiraj()">Reset data</button>
             </div>
           </div>
+
+          </form>-->
         </div>
       </div>
+      </form>
     </div>
+  </div>
+    
+    <div style="float:left" class="col-xs-12 col-sm-12 col-md-8">
+      <div class="graph-holder well well-small">
+        <div id="ytitle_2">Voltage [V]</div>
+        <div id="plot_holder_2"></div>
+        <div id="xtitle_2"></div>
+      </div>
+    </div>
+
+    </div>
+
+
     <div class="footer clearfix">
       <p class="pull-right" style="margin: 4px 0 0">&copy; 2015 - LBM</p>
     </div>
