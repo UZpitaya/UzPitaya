@@ -488,7 +488,7 @@ $('#hf')
         }
       });
     
-    // Modals
+    /* Modals
     
     $('#modal_err, #modal_app').modal({ show: false, backdrop: 'static', keyboard: false });
     
@@ -503,14 +503,14 @@ $('#hf')
       location.reload();
     });
     
-    $('#btn_retry_get').on('click', function() {
-      $('#modal_err').modal('hide');
-      updateGraphData();
-    });
+    //$('#btn_retry_get').on('click', function() {
+      //$('#modal_err').modal('hide');
+      //updateGraphData();
+    }); 
     
     $('.btn-close-modal').on('click', function() {
       $(this).closest('.modal').modal('hide');
-    });
+    });*/
       
     // Other event bindings
     
@@ -649,6 +649,7 @@ $('#hf')
         
         if(! plot) {
           initPlot(dresult.datasets.params);
+          us_show_pulse();
         }
         else {
           // Apply the params state received from server if not in edit mode
@@ -1714,6 +1715,18 @@ function us_start_burst(){
   startb();
 }
 
+function us_show_pulse(){
+
+  burst_sine_vector = []
+  //Place sine synthesis equation here
+  for(i = 0; i < 16384; i++){
+    burst_sine_vector.push([i, Math.sin(i)]);
+  }
+
+  $.plot($("#plot_holder_synth"), [burst_sine_vector]);
+
+}
+
   </script>
   <script src="../assets/redpitaya.custom.js"></script>
 </head>
@@ -2137,11 +2150,15 @@ function us_start_burst(){
                 <div class="row">
                   <div class="col-xs-8 col-md-12 col-lg-8 col-sm-offset-4 col-md-offset-0 col-lg-offset-4">         
                     <div>
-                      <p><p/>
                     </div>
                     <div>
                       <button class="btn btn-primary" onclick="us_start_burst()"><span class="glyphicon glyphicon-fire"></span> START BURST</button> 
                     </div>
+
+                    <div>
+                      <button class="btn btn-primary" onclick="us_show_pulse()"><span class="glyphicon glyphicon-align-center"></span>SHOW PULSE</button> 
+                    </div>
+
                   </div>
                 </div>
               </form>
@@ -2152,65 +2169,59 @@ function us_start_burst(){
         </div>
 
     <div class="panel panel-default">
-      <div class="panel-heading">
-        <h4 class="panel-title">
-          <a data-toggle="collapse" href="#plot_meas">
-            Save settings
-          </a>
-        </h4>
-      </div>
-
-      <div id="save_data" class="panel-collapse collapse">
-        <div class="panel-body">
-          <form class="form-horizontal" role="form" onsubmit="return false;">
-          <div class="form-group"> 
-            <div><label id="lb_save_data" class="col-xs-4 control-label"><b>Save data</b></label></div>
-            
-            <div class="col-xs-5">
-              <button id="bt_save_data" class="btn btn-primary btn-lg" data-checked="true" onclick="saveData()">Save </button>
-            </div>
-
-          </div>
-
-            <div id="load_data" class="center-position"></div>   
-            <div class="form-group">
-              <div><label id="lb_load_data" class="col-xs-4 control-label"><b>Load data</b></label></div>
-
-              <div class="col-xs-5">
-                <button id="bt_load_data" class="btn btn-primary btn-lg" data-checked="true" onclick="loadData()" >Load</button>
-              </div>
-            </div>
-
-          <!-- <div class="form-group">
-            <div><label id="lb_load_data" class="col-xs-4 control-label"><b>Reset data</b></label></div>
-
-            <div class="col-xs-5">
-              <button id="bt_load_data" class="btn btn-primary btn-lg" data-checked="true" onclick="resetiraj()">Reset data</button>
-            </div>
-          </div>
-
-          </form>-->
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#plot_meas">
+              Save settings
+            </a>
+          </h4>
         </div>
-      </div>
-      </form>
+
+        <div id="save_data" class="panel-collapse collapse">
+          <div class="panel-body">
+              <form class="form-horizontal" role="form" onsubmit="return false;">
+                <div class="form-group"> 
+                  <div><label id="lb_save_data" class="col-xs-4 control-label"><b>Save data</b></label></div>
+                  <div class="col-xs-5">
+                    <button id="bt_save_data" class="btn btn-primary btn-lg" data-checked="true" onclick="saveData()">Save </button>
+                  </div>
+                </div>
+
+                <div id="load_data" class="center-position"></div>   
+                <div class="form-group">
+                  <div><label id="lb_load_data" class="col-xs-4 control-label"><b>Load data</b></label></div>
+
+                  <div class="col-xs-5">
+                    <button id="bt_load_data" class="btn btn-primary btn-lg" data-checked="true" onclick="loadData()" >Load</button>
+                  </div>
+                </div>
+              </form>
+          </div>
+        </div>
     </div>
-  </div>
+
     
-    <div style="float:left" class="col-xs-12 col-sm-12 col-md-8">
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-8">
       <div class="graph-holder well well-small">
-        <div id="ytitle_2">Voltage [V]</div>
-        <div id="plot_holder_2"></div>
-        <div id="xtitle_2"></div>
+        <div id="ytitle">Voltage [V]</div>
+        <div id="trigger_cnv_holder">
+          <canvas id="trigger_canvas" width="25" height="460"></canvas>
+          <div id="trigger_tooltip"></div>
+        </div>
+        <div id="plot_holder_synth" style="height:300px"></div>
+        <div id="xtitle"></div>
       </div>
     </div>
 
     </div>
-
 
     <div class="footer clearfix">
       <p class="pull-right" style="margin: 4px 0 0">&copy; 2015 - LBM</p>
     </div>
   </div>
+
   <div id="modal_err" class="modal" tabindex="-1" role="dialog" aria-labelledby="modal_err_label" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
