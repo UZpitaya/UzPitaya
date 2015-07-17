@@ -85,6 +85,7 @@
   var autorun = 1;
   var datasets = [];
   var plot = null;
+  var synth_plot = null;
   var params = {
     original: null,
     local: null
@@ -559,7 +560,7 @@ $('#hf')
     )
     .done(function(dresult) {
       if(dresult.status == 'ERROR') {
-        showModalError((dresult.reason ? dresult.reason : 'Could not start the application.'), true);
+        //showModalError((dresult.reason ? dresult.reason : 'Could not start the application.'), true);
       }
       else {
         $.post(
@@ -571,12 +572,12 @@ $('#hf')
           updateGraphData();      
         })
         .fail(function() {
-          showModalError('Could not initialize the application with default parameters.', false, true);
+          //showModalError('Could not initialize the application with default parameters.', false, true);
         });
       }
     })
     .fail(function() {
-      showModalError('Could not start the application.', true);
+      //showModalError('Could not start the application.', true);
     });
   }
   
@@ -619,7 +620,7 @@ $('#hf')
           startApp();
         }
         else {
-          showModalError((dresult.reason ? dresult.reason : 'Application error.'), true, true);
+          //showModalError((dresult.reason ? dresult.reason : 'Application error.'), true, true);
         }
       }
       else if(dresult.datasets !== undefined && dresult.datasets.params !== undefined) {
@@ -645,6 +646,10 @@ $('#hf')
           dresult.datasets.g1[i].color = i;
           dresult.datasets.g1[i].label = 'Channel ' + (i+1);          
           datasets.push(dresult.datasets.g1[i]);
+        }
+
+        if(!synth_plot){
+
         }
         
         if(! plot) {
@@ -698,12 +703,12 @@ $('#hf')
         }
       }
       else {
-        showModalError('Wrong application data received.', true, true);
+        //showModalError('Wrong application data received.', true, true);
       }
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
       if(last_get_failed) {
-        showModalError('Data receiving failed.<br>Error status: ' + textStatus, true, true);
+        //showModalError('Data receiving failed.<br>Error status: ' + textStatus, true, true);
         last_get_failed = false;
       }
       else {
@@ -743,6 +748,7 @@ $('#hf')
   
   function initPlot(init_params) {
     var plot_holder = $('#plot_holder');
+    var synth_holder = $('#plot_holder_synth');
     var ymax = init_params.gui_reset_y_range / 2;
     var ymin = ymax * -1;
     
@@ -763,6 +769,16 @@ $('#hf')
       plot_holder, 
       filtered_data,
       plot_options
+    );
+
+    var synth_vector = us_show_pulse();
+    var synth_data = [{data:synth_vector, label: "Burst signal", lines:{show:true}}];
+    var options = {legen: {position: "nw"}};
+
+    synth_plot = $.plot(
+      synth_holder,
+      synth_data,
+      options
     );
     
     // Selection
@@ -1003,15 +1019,15 @@ $('#hf')
         } 
       }
       else if(dresult.status == 'ERROR') {
-        showModalError((dresult.reason ? dresult.reason : 'Error while sending data (E1).'), false, true, true);
+        //showModalError((dresult.reason ? dresult.reason : 'Error while sending data (E1).'), false, true, true);
         send_que = false;
       }
       else {
-        showModalError('Error while sending data (E2).', false, true, true);
+        //showModalError('Error while sending data (E2).', false, true, true);
       }
     })
     .fail(function() {
-      showModalError('Error while sending data (E3).', false, true, true);
+      //showModalError('Error while sending data (E3).', false, true, true);
     })
     .always(function() {
       sending = false;
@@ -1722,8 +1738,7 @@ function us_show_pulse(){
   for(i = 0; i < 16384; i++){
     burst_sine_vector.push([i, Math.sin(i)]);
   }
-
-  $.plot($("#plot_holder_synth"), [burst_sine_vector]);
+  return burst_sine_vector;
 
 }
 
