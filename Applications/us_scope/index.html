@@ -654,7 +654,6 @@ $('#hf')
         
         if(! plot) {
           initPlot(dresult.datasets.params);
-          us_show_pulse();
         }
         else {
           // Apply the params state received from server if not in edit mode
@@ -771,8 +770,8 @@ $('#hf')
       plot_options
     );
 
-    var synth_vector = us_show_pulse();
-    var synth_data = [{data:synth_vector, label: "Burst signal", lines:{show:true}}];
+    var synth_vector = us_synth_pulse();
+    var synth_data = [{data:synth_vector, label: "Burst signal", lines:{show:true, lineWidth: 0}}];
     var options = {legen: {position: "nw"}};
 
     synth_plot = $.plot(
@@ -1325,6 +1324,7 @@ $('#hf')
     }
     
     var plot_pholder = plot.getPlaceholder();
+    var synth_holder = $('#plot_holder_synth');
 
     // Disable panning and zoom out
     delete plot_options.pan;
@@ -1731,15 +1731,36 @@ function us_start_burst(){
   startb();
 }
 
-function us_show_pulse(){
+function us_synth_pulse(){
 
   burst_sine_vector = []
   //Place sine synthesis equation here
-  for(i = 0; i < 16384; i++){
+  for(i = 0; i < 150; i++){
     burst_sine_vector.push([i, Math.sin(i)]);
   }
+
   return burst_sine_vector;
 
+}
+
+function us_show_graph(){
+  var synth_holder = $('#plot_holder_synth');
+  var synth_vector = us_synth_pulse();
+  var synth_data = [{data:synth_vector, 
+                    label: "Burst signal",
+                    lines:{show:true, lineWidth: 1}, 
+                    zoom:{interactive: true},
+                    pan:{interactive: true },
+                    xaxis: {zoomRange: [0.1, 10], panRange: [-1000, 1000]},
+                    yaxis: {zoomRange: [0.1, 10], panRange: [-1000, 1000]}}];
+
+  var options = {legen: {position: "nw"}};
+
+  synth_plot = $.plot(
+    synth_holder,
+    synth_data,
+    options
+  );
 }
 
   </script>
@@ -1782,6 +1803,7 @@ function us_show_pulse(){
         <button id="btn_ch2" class="btn btn-primary btn-lg" data-checked="true" onclick="setVisibleChannels(this)">Channel 2</button>
         <button id="btn_auto" class="btn btn-primary btn-lg" onclick="serverAutoScale()">AUTO</button>
         <button id="btn_avg" class="btn btn-default btn-lg" onclick="setAvgAtDec()">Averaging</button>
+        <button class="btn btn-primary" onclick="us_show_graph()"><span class="glyphicon glyphicon-align-center"></span>SHOW PULSE</button> 
       </div>
 
     </div>
@@ -2168,10 +2190,6 @@ function us_show_pulse(){
                     </div>
                     <div>
                       <button class="btn btn-primary" onclick="us_start_burst()"><span class="glyphicon glyphicon-fire"></span> START BURST</button> 
-                    </div>
-
-                    <div>
-                      <button class="btn btn-primary" onclick="us_show_pulse()"><span class="glyphicon glyphicon-align-center"></span>SHOW PULSE</button> 
                     </div>
 
                   </div>
