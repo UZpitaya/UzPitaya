@@ -1700,11 +1700,11 @@ $('#hf')
 function saveData(){
   params.local.us_save_data = 1;
 
-  var amp1 = parseLocalFloat(document.getElementById('amp').value);
-  var hf1 = parseLocalFloat(document.getElementById('hf').value);
-  var lf1 = parseLocalFloat(document.getElementById('lf').value);
-  var nor1 = parseLocalFloat(document.getElementById('nor').value);
-  var nos1 = parseLocalFloat(document.getElementById('nos').value);
+  var amp1 = parseLocalFloat($("#tf_amp").val());
+  var hf1 = parseLocalFloat($("#tf_hf").val());
+  var lf1 = parseLocalFloat($("#tf_lf").val());
+  var nor1 = parseLocalFloat($("#tf_nor").val());
+  var nos1 = parseLocalFloat($("#tf_nos").val());
   params.local.us_amp= amp1;
   params.local.us_hf=hf1;
   params.local.us_lf= lf1;
@@ -1731,13 +1731,46 @@ function us_start_burst(){
   startb();
 }
 
+//TODO: Check for anyother argument parsing inside index.html. input fields changed 
 function us_synth_pulse(){
 
+  /*
+  burst_sine_vector = [];
+  y_one_b = [];
+
+  var nos = $("#tf_nos").val();
+  var hf = $("#tf_hf").val();
+  var lf = $("#tf_lf").val();
+  var nor = $("#tf_nor").val();
+  var ampl = $("#tf_amp").val();
+  var freq = $()
+
+  var num_pts = 20; //??
+
   burst_sine_vector = []
-  //Place sine synthesis equation here
-  for(i = 0; i < 150; i++){
-    burst_sine_vector.push([i, Math.sin(i)]);
+
+  var t_sign = 1 / hf;
+  var t_rep = 1 / lf;
+
+  if(t_sign * nos){
+    window.alert("ADD ERROR"); //TODO
+    return;
   }
+
+  dt = 1 / (num_pts * hf);
+
+  var t;
+  for(var i = 0; i < (nos * num_pts); i++){
+    t = i * dt;
+    y_one_b[i] = ampl * Math.sin(2 * Math.pi * freq * t);
+  }
+
+
+  for(i = 0; i < (t_rep * nor); i += dt){
+    burst_sine_vector.push(0);
+  }
+
+  */
 
   return burst_sine_vector;
 
@@ -2130,7 +2163,7 @@ function us_show_graph(){
                 <div class="form-group">
                   <label for="amp" class="col-xs-4 control-label">Amplitude:</label>
                   <div class="col-xs-4 col-sm-5">
-                    <input type="text" autocomplete="off" class="form-control" value="0" id="amp">
+                    <input type="text" autocomplete="off" class="form-control" value="0" id="tf_amp">
           
                   </div>
                   <div style="padding: 7px 0 0;" class="col-xs-2" id="gen_ch1_ampl_units">V</div>
@@ -2142,7 +2175,7 @@ function us_show_graph(){
                 <div class="form-group">
                   <label for="hf" class="col-xs-4 control-label">Frequency:</label>
                   <div class="col-xs-4 col-sm-5">
-                    <input type="text" autocomplete="off" class="form-control" value="0" id="hf">
+                    <input type="text" autocomplete="off" class="form-control" value="0" id="tf_hf">
                   </div>
                   <div style="padding: 7px 0 0;" class="col-xs-2" id="gen_ch1_freq_units">Hz</div>
                 </div>
@@ -2154,7 +2187,7 @@ function us_show_graph(){
                 <div class="form-group">
                   <label for="nos" class="col-xs-4 control-label">nSine:</label>
                   <div class="col-xs-4 col-sm-5">
-                    <input type="text" autocomplete="off" class="form-control" value="0" id="nos">
+                    <input type="text" autocomplete="off" class="form-control" value="0" id="tf_nos">
                   </div>
                 </div>
               </form>
@@ -2166,7 +2199,7 @@ function us_show_graph(){
                 <div class="form-group">
                   <label for="lf" class="col-xs-4 control-label">nfrequency:</label>
                   <div class="col-xs-4 col-sm-5">
-                    <input type="text" autocomplete="off" class="form-control" value="0" id="lf">
+                    <input type="text" autocomplete="off" class="form-control" value="0" id="tf_lf">
                   </div>
                    <div style="padding: 7px 0 0;" class="col-xs-2" id="gen_ch1_freq_units">Hz</div>
                 </div>
@@ -2177,7 +2210,7 @@ function us_show_graph(){
                 <div class="form-group">
                   <label for="nor" class="col-xs-4 control-label">nRepetitions:</label>
                   <div class="col-xs-4 col-sm-5">
-                    <input type="text" autocomplete="off" class="form-control" value="0" id="nor">
+                    <input type="text" autocomplete="off" class="form-control" value="0" id="tf_nor">
                   </div>
                  </div>
               </form>
