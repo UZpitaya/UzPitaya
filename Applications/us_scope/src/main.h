@@ -98,26 +98,6 @@ typedef struct rp_osc_meas_res_s {
 #define US_START          48
 #define US_BTN            49
 
-/* AWG parameters */
-#define GEN_TRIG_MODE_CH1 50
-#define GEN_SIG_TYPE_CH1  51
-#define GEN_ENABLE_CH1    52
-#define GEN_SINGLE_CH1    53
-#define GEN_SIG_AMP_CH1   54
-#define GEN_SIG_FREQ_CH1  55
-#define GEN_SIG_DCOFF_CH1 56
-#define GEN_TRIG_MODE_CH2 57
-#define GEN_SIG_TYPE_CH2  58
-#define GEN_ENABLE_CH2    59
-#define GEN_SINGLE_CH2    60
-#define GEN_SIG_AMP_CH2   61
-#define GEN_SIG_FREQ_CH2  62
-#define GEN_SIG_DCOFF_CH2 63
-#define GEN_AWG_REFRESH   64
-
-/* Defines from which parameters on are AWG parameters (used in set_param() to
- * trigger update only on needed part - either Oscilloscope or AWG */
-#define PARAMS_AWG_PARAMS 50
 
 /* Output signals */
 #define SIGNAL_LENGTH (1024) /* Must be 2^n! */
@@ -155,9 +135,6 @@ void transform_from_iface_units(rp_app_params_t *p);
  * in the application 
  */
 int rp_update_meas_data(rp_osc_meas_res_t ch1_meas, rp_osc_meas_res_t ch2_meas);
-
-/* Waveform generator frequency limiter. */
-float rp_gen_limit_freq(float freq, float gen_type);
 
 /* UZ get parameters */
 float rp_get_params_uz(int pos);

@@ -299,7 +299,7 @@ void *rp_osc_worker_thread(void *args)
             
             /* If the file doesn't exists yet */
             if(fopen("/opt/www/apps/scope/uz_param_data", "w") == NULL){
-                /* Create a normal file, as txt is a just an interpreter */
+                /* Create a file without an ending, as txt is just an interpreter */
                 strcpy(f_command, "touch /opt/www/apps/scope/uz_param_data");
                 system(f_command);
             }
@@ -325,98 +325,75 @@ void *rp_osc_worker_thread(void *args)
             printf("Loading parameters failed!\n");
         }
 
-/*
+        /* API call - Meh */
         float btn;
         float param;
-
- 
           
-          if(access( "/tmp/uz_btn", F_OK ) != -1 ) {
-    // file exists
-          
-                btn=1;
-
-}
-
-             else {
-
-    // file doesn't exist
-                btn=0;
-            }
-     */      
-        
-        
+        if(access( "/tmp/uz_btn", F_OK ) != -1 ) {
+            /* file exists */
+            btn=1;
+        }else {
+            /* file doesn't exist */
+            btn=0;
+        }
 
         /* Read data */
- //       FILE *ddata = fopen("/tmp/uz_btn", "r");
+        FILE *ddata = fopen("/tmp/uz_btn", "r");
 
-            /* Read data into val */
- //          fscanf(ddata, "%f", &btn);
-            /* Set according parameters with value val */
-//            rp_set_params_uz(7, btn);
-          
-//         fclose(ddata);
+        /* Read data into val */
+        fscanf(ddata, "%f", &btn);
 
+        /* Set according parameters with value val */
+        rp_set_params_uz(7, btn);
+        fclose(ddata);
+   
+        float burst=rp_get_params_uz(6);
+        //float btn1=rp_get_params_uz(7);
 
- 
+        if (burst || ((btn==1) && (param==1)))  {
+            char command[100];
 
-/*       
-       float burst=rp_get_params_uz(6);
-       //float btn1=rp_get_params_uz(7);
+            float uz_amp = rp_get_params_uz(0);
+            float uz_hf = rp_get_params_uz(1);
+            float uz_lf = rp_get_params_uz(2);
+            float uz_nor = rp_get_params_uz(3);
+            float uz_nos = rp_get_params_uz(4);
 
+            char amp[20];
+            char hf[20];
+            char lf[20];
+            char nor[20];
+            char nos[20];
+            snprintf(amp, 20, "%f", uz_amp);
+            snprintf(hf, 20, "%f", uz_hf);
+            snprintf(lf, 20, "%f", uz_lf);
+            snprintf(nor, 20, "%f", uz_nor);
+            snprintf(nos, 20, "%f", uz_nos);
 
-
-
-              if (burst|| ((btn==1)&&(param==1)))  {
-
-         
-                char command[100];
-
-                float uz_amp = rp_get_params_uz(0);
-                float uz_hf = rp_get_params_uz(1);
-                float uz_lf = rp_get_params_uz(2);
-                float uz_nor = rp_get_params_uz(3);
-                float uz_nos = rp_get_params_uz(4);
-
-                char amp[20];
-                char hf[20];
-                char lf[20];
-                char nor[20];
-                char nos[20];
-                snprintf(amp, 20, "%f", uz_amp);
-                snprintf(hf, 20, "%f", uz_hf);
-                snprintf(lf, 20, "%f", uz_lf);
-                snprintf(nor, 20, "%f", uz_nor);
-                snprintf(nos, 20, "%f", uz_nos);
-
-                strcpy(command, "/opt/www/apps/scope/api_test 1 ");
-                strcat(command, amp);
-                strcat(command, " ");
-                strcat(command, hf);
-                strcat(command, " ");
-                strcat(command, lf);
-                strcat(command, " ");
-                strcat(command, nor);
-                strcat(command, " ");
-                strcat(command, nos);
-                strcat(command, " 0 &");   
-                system(command);
-                rp_set_params_uz(6,0);
-                param=0;
-               // if(btn==1) {
-                //usleep(2000000);
-                //btn=0;
-                //} 
-             }
-             if(btn==0)
-             {
-
-                param=1;
-             }
-
-
-
-*/
+            strcpy(command, "/opt/www/apps/scope/api_test 1 ");
+            strcat(command, amp);
+            strcat(command, " ");
+            strcat(command, hf);
+            strcat(command, " ");
+            strcat(command, lf);
+            strcat(command, " ");
+            strcat(command, nor);
+            strcat(command, " ");
+            strcat(command, nos);
+            strcat(command, " 0 &");   
+            system(command);
+            rp_set_params_uz(6,0);
+            param=0;
+            
+            // if(btn==1) {
+            //usleep(2000000);
+            //btn=0;
+            //} 
+        }
+        
+        if(btn==0){
+            param=1;
+        }
 
 
         /* request to stop worker thread, we will shut down */

@@ -178,66 +178,7 @@ static rp_app_params_t rp_main_params[PARAMS_NUM+1] = {
     { /* External trigger param */
        "us_btn", -1, 1, 0, -1, 3 },
 
-    /* Arbitrary Waveform Generator parameters from here on */
-
-    { /* gen_trig_mod_ch1 - Selects the trigger mode for channel 1:
-       *    0 - continuous
-       *    1 - single 
-       *    2 - external */
-        "gen_trig_mod_ch1", 0, 1, 0, 0, 2 },
-    { /* gen_sig_type_ch1 - Selects the type of signal for channel 1:
-       *    0 - sine
-       *    1 - square
-       *    2 - triangle
-       *    3 - from file */
-        "gen_sig_type_ch1", 0, 1, 0, 0, 3 },
-    { /* gen_enable_ch1 - Enables/disable signal generation on channel 1:
-       *    0 - Channel 1 disabled
-       *    1 - Channel 1 enabled */
-        "gen_enable_ch1", 0, 1, 0, 0, 1 },
-    { /* gen_single_ch1 - Fire single trigger on generator channel 1:
-       *    0 - Do not fire single trigger
-       *    1 - Fire single trigger */
-        "gen_single_ch1", 0, 1, 0, 0, 1 },
-    { /* gen_sig_amp_ch1 - Amplitude for Channel 1 in [Vpp] */
-        "gen_sig_amp_ch1", 0, 1, 0, 0, 2.0 },
-    { /* gen_sig_freq_ch1 - Frequency for Channel 1 in [Hz] */
-        "gen_sig_freq_ch1", 1000, 1, 0, 0, 50e6 },
-    { /* gen_sig_dcoff_ch1 - DC offset applied to the signal in [V] */
-        "gen_sig_dcoff_ch1", 0, 1, 0, -1, 1 },
-    { /* gen_trig_mod_ch2 - Selects the trigger mode for channel 2:
-       *    0 - continuous
-       *    1 - single 
-       *    2 - external */
-        "gen_trig_mod_ch2", 0, 1, 0, 0, 2 },
-    { /* gen_sig_type_ch2 - Selects the type of signal for channel 2:
-       *    0 - sine
-       *    1 - square
-       *    2 - triangle
-       *    3 - from file */
-        "gen_sig_type_ch2", 0, 1, 0, 0, 3 },
-    { /* gen_enable_ch2 - Enables/disable signal generation on channel 2:
-       *    0 - channel 2 disabled
-       *    1 - channel 2 enabled */
-        "gen_enable_ch2", 0, 1, 0, 0, 1 },
-    { /* gen_single_ch2 - Fire single trigger on generator channel 2:
-       *    0 - Do not fire single trigger
-       *    1 - Fire single trigger */
-        "gen_single_ch2", 0, 1, 0, 0, 1 },
-    { /* gen_sig_amp_ch2 - Amplitude for channel 2 in [Vpp] */
-        "gen_sig_amp_ch2", 0, 1, 0, 0, 2.0 },
-    { /* gen_sig_freq_ch2 - Frequency for channel 2 in [Hz] */
-        "gen_sig_freq_ch2", 1000, 1, 0, 0.2, 50e6 },
-    { /* gen_sig_dcoff_ch2 - DC offset applied to the signal in [V] */
-        "gen_sig_dcoff_ch2", 0, 1, 0, -1, 1 },
-    { /* gen_awg_refresh - Refresh AWG data from (uploaded) file.
-       *     0 - Do not refresh
-       *     1 - Refresh Channel 1
-       *     2 - Refresh Channel 2
-       */
-        "gen_awg_refresh",   0, 0, 0, 0, 2 },
-    { /* Must be last! */
-        NULL, 0.0, -1, -1, 0.0, 0.0 }     
+    {  NULL, 0.0, -1, -1, 0.0, 0.0 }     
 };
 /* params initialized */
 static int params_init = 0;
@@ -272,9 +213,6 @@ int rp_app_init(void)
                           &rp_main_calib_params) < 0) {
         return -1;
     }
-    if(generate_init(&rp_main_calib_params) < 0) {
-        return -1;
-    }
 
     rp_set_params(&rp_main_params[0], PARAMS_NUM);
 
@@ -287,7 +225,6 @@ int rp_app_exit(void)
     fprintf(stderr, "Unloading scope (with gen+pid extensions) version %s-%s.\n", VERSION_STR, REVISION_STR);
 
     rp_osc_worker_exit();
-    generate_exit();
 
     return 0;
 }
@@ -530,9 +467,6 @@ void transform_to_iface_units(rp_app_params_t *p)
     p[MIN_Y_PARAM].value = p[MIN_Y_NORM].value * scale;
     p[MAX_Y_PARAM].value = p[MAX_Y_NORM].value * scale;
 
-    p[GEN_DC_OFFS_1].value = p[GEN_DC_NORM_1].value * scale1;
-    p[GEN_DC_OFFS_2].value = p[GEN_DC_NORM_2].value * scale2;
-
     p[SCALE_CH1].value = scale1;
     p[SCALE_CH2].value = scale2;
 }
@@ -542,9 +476,6 @@ void transform_from_iface_units(rp_app_params_t *p)
     float scale1, scale2, maxv;
     get_scales(p, &scale1, &scale2, &maxv);
 
-    /* Re-calculate input parameters */
-    p[GEN_DC_NORM_1].value = p[GEN_DC_OFFS_1].value / scale1;
-    p[GEN_DC_NORM_2].value = p[GEN_DC_OFFS_2].value / scale2;
 }
 
 int rp_set_params(rp_app_params_t *p, int len)
@@ -552,7 +483,6 @@ int rp_set_params(rp_app_params_t *p, int len)
     int i;
     int fpga_update = 1;
     int params_change = 0;
-    int awg_params_change = 0;
     
     TRACE("%s()\n", __FUNCTION__);
 
@@ -589,10 +519,6 @@ int rp_set_params(rp_app_params_t *p, int len)
             continue;
 
         if(rp_main_params[p_idx].value != p[i].value) {
-            if(p_idx < PARAMS_AWG_PARAMS) 
-                params_change = 1;
-            if(p_idx >= PARAMS_AWG_PARAMS)
-                awg_params_change = 1;
             if(rp_main_params[p_idx].fpga_update)
                 fpga_update = 1;
         }
@@ -790,23 +716,6 @@ int rp_set_params(rp_app_params_t *p, int len)
             rp_main_params[SINGLE_BUT_PARAM].value = 0;
             rp_osc_clean_signals();
             rp_osc_worker_change_state(rp_osc_single_state);
-        }
-    }
-
-    if(awg_params_change || (rp_main_params[US_START].value == 1)) {
-
-        /* Enable channel 1 */
-        rp_main_params[GEN_ENABLE_CH1].value = 1;
-
-        /* Correct frequencies if needed */
-        rp_main_params[GEN_SIG_FREQ_CH1].value = 
-            rp_gen_limit_freq(rp_main_params[GEN_SIG_FREQ_CH1].value,
-                              rp_main_params[GEN_SIG_TYPE_CH1].value);
-        rp_main_params[GEN_SIG_FREQ_CH2].value = 
-            rp_gen_limit_freq(rp_main_params[GEN_SIG_FREQ_CH2].value,
-                              rp_main_params[GEN_SIG_TYPE_CH2].value);
-        if(generate_update(&rp_main_params[0]) < 0) {
-            return -1;
         }
     }
 
@@ -1063,34 +972,7 @@ int rp_update_meas_data(rp_osc_meas_res_t ch1_meas, rp_osc_meas_res_t ch2_meas)
     return 0;
 }
 
-float rp_gen_limit_freq(float freq, float gen_type)
-{
-    int type = (int)gen_type;
 
-    if(freq < 0) {
-        freq = 0;
-    } else {
-        switch(type) {
-        case 0:
-            /* Sine */
-            if(freq > 50e6)
-                freq = 50e6;
-            break;
-        case 1:
-            /* Square */
-            if(freq > 20e6)
-                freq = 20e6;
-            break;
-        case 2:
-            /* Triangle */
-            if(freq > 25e6)
-                freq = 25e6;
-            break;
-        }
-    }
-
-    return freq;
-}
 
 /* General function for returning parameters */
 float rp_get_params_uz(int pos){
