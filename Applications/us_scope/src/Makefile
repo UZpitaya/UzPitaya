@@ -1,4 +1,5 @@
-CC=$(CROSS_COMPILE)gcc
+CROSS_COMPILE ?= arm-linux-gnueabi-
+CC = $(CROSS_COMPILE)gcc
 RM=rm
 
 OBJECTS=main.o fpga.o worker.o calib.o fpga_awg.o
@@ -9,12 +10,10 @@ LDFLAGS=-shared
 
 
 OUT_DIR ?= ../
-CONTROLLER ?= $(OUT_DIR)controller.so
+C_OUT_NAME = $(OUT_DIR)/controller.so
 
 all: $(OBJECTS)
+	$(CC) -o $(C_OUT_NAME) $(OBJECTS) $(CFLAGS) $(LDFLAGS) 
 
-make_c_app: $(OBJECTS)
-	$(CC) -o $(CONTROLLER) $(OBJECTS) $(CFLAGS) $(LDFLAGS)
-
-clean::
-	-$(RM) -f $(C_OUT_NAME) $(OBJECTS)
+clean:
+	-$(RM) -f $(OBJECTS) $(C_OUT_NAME)

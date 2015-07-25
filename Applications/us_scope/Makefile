@@ -16,14 +16,15 @@ INSTALL_DIR ?= ../
 
 CONTROLLER=controller.so
 ARTIFACTS=$(CONTROLLER)
+API_DIR = api_include
 
 CFLAGS += -DVERSION=$(VER)-$(BUILD_NUMBER) -DREVISION=$(REVISION)
 export CFLAGS
 
-all: $(CONTROLLER)
-
-$(CONTROLLER):
-	$(MAKE) -C src
+all:
+	mkdir objs
+	$(MAKE) -C src OUT_DIR=../objs
+	$(MAKE) -C $(API_DIR)
 
 zip: $(CONTROLLER)
 	-$(RM) target -rf
@@ -39,5 +40,7 @@ zip: $(CONTROLLER)
 
 clean:
 	$(MAKE) -C src clean
+	$(MAKE) -C $(API_DIR) clean
+	-$(RM) $(CONTROLLER)
 	-$(RM) target -rf
 	-$(RM) *.zip
