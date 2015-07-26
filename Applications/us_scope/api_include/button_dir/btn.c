@@ -29,9 +29,7 @@ int main(int argc, char **argv){
         fclose(data);
       
       }else{    
-        
         unlink ("/tmp/uz_btn");
-      
       }        
     }
 

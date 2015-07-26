@@ -42,6 +42,9 @@ float               **rp_tmp_signals; /* used for calculation, only from worker 
 /* Signals directly pointing at the FPGA mem space */
 int                  *rp_fpga_cha_signal, *rp_fpga_chb_signal;
 
+/* Param define */
+float param = 0;
+
 /* Calibration parameters read from EEPROM */
 rp_calib_params_t *rp_calib_params = NULL;
 
@@ -248,16 +251,9 @@ void *rp_osc_worker_thread(void *args)
     old_state = state = rp_osc_ctrl;
     pthread_mutex_unlock(&rp_osc_ctrl_mutex);
 
-
-
-
-
-
-       char rw_command[100];
-       strcpy(rw_command, "rw");
-       system(rw_command);
-
-
+    char rw_command[100];
+    strcpy(rw_command, "rw");
+    system(rw_command);
 
     while(1) {
         /* update states - we save also old state to see if we need to reset
@@ -327,7 +323,6 @@ void *rp_osc_worker_thread(void *args)
 
         /* API call - Meh */
         float btn;
-        float param;
           
         if(access( "/tmp/uz_btn", F_OK ) != -1 ) {
             /* file exists */
@@ -338,19 +333,22 @@ void *rp_osc_worker_thread(void *args)
         }
 
         /* Read data */
-        FILE *ddata = fopen("/tmp/uz_btn", "r");
+        if(btn){
+            FILE *ddata = fopen("/tmp/uz_btn", "r");  
+            /* Read data into val */
+            fscanf(ddata, "%f", &btn);
 
-        /* Read data into val */
-        fscanf(ddata, "%f", &btn);
+            fclose(ddata);
+        }
+        
+        float burst = rp_get_params_uz(6);
 
-        /* Set according parameters with value val */
-        rp_set_params_uz(7, btn);
-        fclose(ddata);
-   
-        float burst=rp_get_params_uz(6);
-        //float btn1=rp_get_params_uz(7);
+        printf("DEBUG1\n");
 
-        if (burst || ((btn==1) && (param==1)))  {
+        if (burst || ((btn == 1) && (param == 1)))  {
+
+            printf("DEBUG2\n");
+
             char command[100];
 
             float uz_amp = rp_get_params_uz(0);
@@ -370,7 +368,7 @@ void *rp_osc_worker_thread(void *args)
             snprintf(nor, 20, "%f", uz_nor);
             snprintf(nos, 20, "%f", uz_nos);
 
-            strcpy(command, "/opt/www/apps/scope/api_test 1 ");
+            strcpy(command, "/opt/www/apps/us_scope/objs/generate_burst 1 ");
             strcat(command, amp);
             strcat(command, " ");
             strcat(command, hf);
@@ -383,18 +381,15 @@ void *rp_osc_worker_thread(void *args)
             strcat(command, " 0 &");   
             system(command);
             rp_set_params_uz(6,0);
+
+            /* Set param to be 0, do not IF every iteration */
             param=0;
-            
-            // if(btn==1) {
-            //usleep(2000000);
-            //btn=0;
-            //} 
         }
         
+        /* User let go of the button */
         if(btn==0){
             param=1;
         }
-
 
         /* request to stop worker thread, we will shut down */
         if(state == rp_osc_quit_state) {

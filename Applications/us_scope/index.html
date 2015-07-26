@@ -1772,14 +1772,17 @@ function us_synth_pulse(){
 
   */
 
-  return burst_sine_vector;
-
 }
 
 function us_show_graph(){
   var synth_holder = $('#plot_holder_synth');
-  var synth_vector = us_synth_pulse();
-  var synth_data = [{data:synth_vector, 
+
+  var synth_vector = [];//TODO: us_synth_pulse();
+  for(var i = 0; i < 200; ++i){
+    synth_vector.push(Math.sin(i));
+  }
+
+  var synth_options = [{data:synth_vector, 
                     label: "Burst signal",
                     lines:{show:true, lineWidth: 1}, 
                     zoom:{interactive: true},
@@ -1791,8 +1794,8 @@ function us_show_graph(){
 
   synth_plot = $.plot(
     synth_holder,
-    synth_data,
-    options
+    synth_vector,
+    synth_options
   );
 }
 

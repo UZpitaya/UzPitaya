@@ -11,6 +11,10 @@ int main(int argc, char **argv){
         fprintf(stderr, "Rp api init failed!\n");
     }
 
+    /*Var definition */
+   //uint32_t buff_size = 16 * 1024;
+    //float *buffer = malloc(buff_size * sizeof(float));
+
     rp_DpinSetDirection(RP_DIO1_N, RP_OUT);
 
     rp_DpinSetState(RP_DIO1_N, RP_HIGH);
@@ -35,6 +39,19 @@ int main(int argc, char **argv){
     usleep(2000000);
     rp_DpinSetState(RP_DIO1_N, RP_LOW);
     rp_DpinSetState(RP_LED5, RP_LOW);
+
+    #if 0
+        * Starts acquisition */
+    rp_AcqStart();
+    rp_AcqSetTriggerSrc(RP_TRIG_SRC_NOW);
+ 
+    /* Get the whole buffer into buf */
+    rp_AcqGetOldestDataV(RP_CH_1, &buff_size, buffer);
+
+    for(int i = 0; i < buff_size; ++i){
+        printf("%f\n", buffer[i]);
+    }
+    #endif
     
     /* Releasing resources */
     rp_Release();
