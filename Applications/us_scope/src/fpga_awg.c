@@ -198,6 +198,17 @@ float fpga_awg_calc_dac_max_v(uint32_t be_gain_fs)
     return max_dac_v;
 }
 
+
+
+int gen_fpga_awg_get_sig_ptr(int **cha, int **chb){
+
+    *cha = (int *)g_awg_cha_mem;
+    *chb = (int *)g_awg_chb_mem;
+
+    return 0;
+}
+
+
 int us_EnableBurst(){
 
     g_awg_reg->state_machine_conf = 0x00110;
