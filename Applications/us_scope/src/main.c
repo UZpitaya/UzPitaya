@@ -26,6 +26,7 @@
 #include "worker.h"
 #include "fpga.h"
 #include "calib.h"
+#include "fpga_awg.h"
 
 /* Describe app. parameters with some info/limitations */
 pthread_mutex_t rp_main_params_mutex = PTHREAD_MUTEX_INITIALIZER;

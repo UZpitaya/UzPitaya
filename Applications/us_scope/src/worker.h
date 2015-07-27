@@ -64,7 +64,7 @@ int rp_osc_prepare_time_vector(float **out_signal, int dec_factor,
  * TODO: Remove time vector generation from these functions, it should
  * be created at the beginning
  */
-int rp_osc_decimate(float **cha_signal, int *in_cha_signal,
+int us_pulse_creation(float **cha_signal, int *in_cha_signal,
                     float **chb_signal, int *in_chb_signal,
                     float **time_signal, int dec_factor, 
                     float t_start, float t_stop, int time_unit,

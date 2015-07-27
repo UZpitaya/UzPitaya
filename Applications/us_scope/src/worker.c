@@ -23,6 +23,7 @@
 
 #include "worker.h"
 #include "fpga.h"
+#include "fpga_awg.h"
 
 pthread_t *rp_osc_thread_handler = NULL;
 void *rp_osc_worker_thread(void *args);
@@ -41,6 +42,9 @@ float               **rp_tmp_signals; /* used for calculation, only from worker 
 
 /* Signals directly pointing at the FPGA mem space */
 int                  *rp_fpga_cha_signal, *rp_fpga_chb_signal;
+
+/* Signals directly pointing at the FPGA AWG mem space */
+int                  *rp_fpga_awg_cha, *rp_fpga_awg_chb;
 
 /* Param define */
 float param = 0;
@@ -77,9 +81,16 @@ int rp_osc_worker_init(rp_app_params_t *params, int params_len,
         return -1;
     }
 
+    if(fpga_awg_init() < 0){
+        rp_cleanup_signals(&rp_osc_signals);
+        rp_cleanup_signals(&rp_tmp_signals);
+        return -1;
+    }
+
     rp_calib_params = calib_params;
 
     osc_fpga_get_sig_ptr(&rp_fpga_cha_signal, &rp_fpga_chb_signal);
+    gen_fpga_awg_get_sig_ptr(&rp_fpga_awg_cha, &rp_fpga_awg_chb);
 
     rp_osc_thread_handler = (pthread_t *)malloc(sizeof(pthread_t));
     if(rp_osc_thread_handler == NULL) {
@@ -343,11 +354,7 @@ void *rp_osc_worker_thread(void *args)
         
         float burst = rp_get_params_uz(6);
 
-        printf("DEBUG1\n");
-
         if (burst || ((btn == 1) && (param == 1)))  {
-
-            printf("DEBUG2\n");
 
             char command[100];
 
@@ -380,15 +387,13 @@ void *rp_osc_worker_thread(void *args)
             strcat(command, nos);
             strcat(command, " 0 &");   
             system(command);
-            rp_set_params_uz(6,0);
 
-            /* Set param to be 0, do not IF every iteration */
-            param=0;
+            param = 0;
         }
         
         /* User let go of the button */
-        if(btn==0){
-            param=1;
+        if(btn == 0){
+            param = 1;
         }
 
         /* request to stop worker thread, we will shut down */
@@ -611,15 +616,33 @@ void *rp_osc_worker_thread(void *args)
             /* Triggered, decimate & convert the values */
             rp_osc_meas_clear(&ch1_meas);
             rp_osc_meas_clear(&ch2_meas);
-            rp_osc_decimate((float **)&rp_tmp_signals[1], &rp_fpga_cha_signal[0],
-                            (float **)&rp_tmp_signals[2], &rp_fpga_chb_signal[0],
-                            (float **)&rp_tmp_signals[0], dec_factor, 
-                            curr_params[MIN_GUI_PARAM].value,
-                            curr_params[MAX_GUI_PARAM].value,
-                            curr_params[TIME_UNIT_PARAM].value, 
-                            &ch1_meas, &ch2_meas, ch1_max_adc_v, ch2_max_adc_v,
-                            curr_params[GEN_DC_OFFS_1].value,
-                            curr_params[GEN_DC_OFFS_2].value);
+
+            if(burst){
+
+                us_pulse_creation((float **)&rp_tmp_signals[1], &rp_fpga_awg_cha[0],
+                                (float **)&rp_tmp_signals[2], &rp_fpga_awg_chb[0],
+                                (float **)&rp_tmp_signals[0], dec_factor, 
+                                curr_params[MIN_GUI_PARAM].value,
+                                curr_params[MAX_GUI_PARAM].value,
+                                curr_params[TIME_UNIT_PARAM].value, 
+                                &ch1_meas, &ch2_meas, ch1_max_adc_v, ch2_max_adc_v,
+                                curr_params[GEN_DC_OFFS_1].value,
+                                curr_params[GEN_DC_OFFS_2].value);
+
+                rp_set_params_uz(6, 0);
+
+            }else{
+                us_pulse_creation((float **)&rp_tmp_signals[1], &rp_fpga_cha_signal[0],
+                                (float **)&rp_tmp_signals[2], &rp_fpga_chb_signal[0],
+                                (float **)&rp_tmp_signals[0], dec_factor, 
+                                curr_params[MIN_GUI_PARAM].value,
+                                curr_params[MAX_GUI_PARAM].value,
+                                curr_params[TIME_UNIT_PARAM].value, 
+                                &ch1_meas, &ch2_meas, ch1_max_adc_v, ch2_max_adc_v,
+                                curr_params[GEN_DC_OFFS_1].value,
+                                curr_params[GEN_DC_OFFS_2].value);
+            }
+
         } else {
             long_acq_idx = rp_osc_decimate_partial((float **)&rp_tmp_signals[1], 
                                              &rp_fpga_cha_signal[0], 
@@ -721,7 +744,7 @@ int rp_osc_prepare_time_vector(float **out_signal, int dec_factor,
 
 
 /*----------------------------------------------------------------------------------*/
-int rp_osc_decimate(float **cha_signal, int *in_cha_signal,
+int us_pulse_creation(float **cha_signal, int *in_cha_signal,
                     float **chb_signal, int *in_chb_signal,
                     float **time_signal, int dec_factor, 
                     float t_start, float t_stop, int time_unit,
@@ -758,9 +781,11 @@ int rp_osc_decimate(float **cha_signal, int *in_cha_signal,
          */
         t_step = round((t_stop_idx-t_start_idx)/(float)(SIGNAL_LENGTH-1));
     }
+
     osc_fpga_get_wr_ptr(&wr_ptr_curr, &wr_ptr_trig);
     in_idx = wr_ptr_trig + t_start_idx - 3;
 
+    /* Circular buff approx. */
     if(in_idx < 0) 
         in_idx = OSC_FPGA_SIG_LEN + in_idx;
     if(in_idx >= OSC_FPGA_SIG_LEN)
@@ -771,10 +796,6 @@ int rp_osc_decimate(float **cha_signal, int *in_cha_signal,
      *  - avg, amp - performed after the loop
      *  - freq, period - performed in the next decimation loop
      */
-    for(out_idx=0; out_idx < OSC_FPGA_SIG_LEN; out_idx++) {
-        rp_osc_meas_min_max(ch1_meas, in_cha_signal[out_idx]);
-        rp_osc_meas_min_max(ch2_meas, in_chb_signal[out_idx]);
-    }
 
     for(out_idx=0, t_idx=0; out_idx < SIGNAL_LENGTH; 
         out_idx++, in_idx+=t_step, t_idx+=t_step) {
